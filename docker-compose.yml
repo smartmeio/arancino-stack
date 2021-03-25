@@ -1,0 +1,106 @@
+##############################################
+#                                            #
+# docker-compose.yml for Arancino Ecosystem  #
+#                                            #
+##############################################
+
+version: '3.7'
+services:
+  lrod:
+    container_name: lrod
+    restart: always
+    build:
+      context: ./dockerfiles
+      dockerfile: Dockerfile-lrod.dockerfile
+    image: smartmeio/lrod:0.4.17
+    command: lightning-rod
+    volumes:
+      - '/srv/lrod/etc/iotronic:/etc/iotronic'
+      - '/srv/lrod/var/log/iotronic:/var/log/iotronic'
+      - '/srv/lrod/var/lib/iotronic:/var/lib/iotronic'
+    ports:
+      - '1474:1474'
+    networks:
+      - 'default'
+
+  redis-volatile:
+    container_name: redis-volatile-arancino
+    restart: always
+    build:
+      context: ./dockerfiles
+      dockerfile: Dockerfile-redis-volatile.dockerfile
+    image: smartmeio/redis-volatile:6.0.10
+    command: redis-server /etc/redis/redis-volatile.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    volumes:
+      - '/srv/redis-volatile/etc/redis:/etc/redis'
+      - '/srv/redis-volatile/redis-data:/var/lib/redis'
+    ports:
+      - '6379:6379'
+    networks:
+      - 'default'
+
+  redis-persistent:
+    container_name: redis-persistent-arancino
+    restart: always
+    build:
+      context: ./dockerfiles
+      dockerfile: Dockerfile-redis-persistent.dockerfile
+    image: smartmeio/redis-persistent:6.0.10
+    command: redis-server /etc/redis/redis-persistent.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    volumes:
+      - '/srv/redis-persistent/etc/redis:/etc/redis'
+      - '/srv/redis-persistent/redis-data:/var/lib/redis'
+    ports:
+      - '6380:6380'
+    networks:
+      - 'default'
+
+  rediseen:
+    container_name: rediseen-arancino
+    restart: always
+    image: xddeng/rediseen:latest
+    environment:
+      - REDISEEN_REDIS_URI="redis://:@redis-server:6379"
+      - REDISEEN_DB_EXPOSED=0
+      - REDISEEN_KEY_PATTERN_EXPOSED="^key:([0-9a-z]+)"
+    ports:
+      - '8080:8080'
+    networks:
+      - 'default'
+
+  arancino:
+    container_name: arancino
+    restart: always
+    privileged: true
+    build:
+      context: ./dockerfiles
+      dockerfile: Dockerfile-arancino.dockerfile
+    image: smartmeio/arancino:2.2.0
+    command: /bin/bash -c 'gunicorn -c "$ARANCINOCONF/gunicorn.cfg.py" arancino.ArancinoStart:app'
+    environment:
+      - ARANCINO=/etc/arancino
+      - ARANCINOCONF=/etc/arancino/config
+      - ARANCINOLOG=/var/log/arancino
+      - ARANCINOENV=PROD
+      - FLASK_ENV=production
+    volumes:
+      - '/srv/arancino/etc/config:/etc/arancino/config'
+      - '/srv/arancino/var/log/arancino:/var/log/arancino'
+      - '/dev:/dev'
+    depends_on:
+      - redis-volatile
+      - redis-persistent
+      - rediseen
+    ports:
+      - '1475:1475'
+    networks:
+      - 'default'
+
+networks:
+  default:
+    name: arancino-network
+    driver: 'bridge'
