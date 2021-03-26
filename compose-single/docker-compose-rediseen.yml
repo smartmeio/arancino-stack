@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  rediseen:
+    container_name: rediseen-arancino
+    restart: always
+    image: xddeng/rediseen:latest
+    environment:
+      - REDISEEN_REDIS_URI="redis://:@redis-volatile-arancino:6379"
+      - REDISEEN_DB_EXPOSED=0
+      - REDISEEN_KEY_PATTERN_EXPOSED="^key:([0-9a-z]+)"
+    ports:
+      - '8080:8080'
+    networks:
+      - 'default'
+
+networks:
+  default:
+    name: arancino-network
+    driver: 'bridge'
