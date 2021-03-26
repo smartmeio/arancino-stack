@@ -15,4 +15,8 @@ COPY ./files/pip.conf /etc/pip.conf
 
 RUN pip3 install -v arancino==2.2.0
 
+COPY ./files/arancino.cfg /etc/arancino/config/arancino.cfg
+
 EXPOSE 1475
+EXPOSE 6379
+EXPOSE 6380
