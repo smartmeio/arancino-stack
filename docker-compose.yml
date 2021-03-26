@@ -10,8 +10,8 @@ services:
     container_name: lrod
     restart: always
     build:
-      context: ./dockerfiles
-      dockerfile: Dockerfile-lrod.dockerfile
+      context: .
+      dockerfile: dockerfiles/Dockerfile-lrod.dockerfile
     image: smartmeio/lrod:0.4.17
     command: lightning-rod
     volumes:
@@ -27,14 +27,13 @@ services:
     container_name: redis-volatile-arancino
     restart: always
     build:
-      context: ./dockerfiles
-      dockerfile: Dockerfile-redis-volatile.dockerfile
+      context: .
+      dockerfile: dockerfiles/Dockerfile-redis-volatile.dockerfile
     image: smartmeio/redis-volatile:6.0.10
     command: redis-server /etc/redis/redis-volatile.conf
     environment:
       - REDIS_REPLICATION_MODE=master
     volumes:
-      - '/srv/redis-volatile/etc/redis:/etc/redis'
       - '/srv/redis-volatile/redis-data:/var/lib/redis'
     ports:
       - '6379:6379'
@@ -45,14 +44,13 @@ services:
     container_name: redis-persistent-arancino
     restart: always
     build:
-      context: ./dockerfiles
-      dockerfile: Dockerfile-redis-persistent.dockerfile
+      context: .
+      dockerfile: dockerfiles/Dockerfile-redis-persistent.dockerfile
     image: smartmeio/redis-persistent:6.0.10
     command: redis-server /etc/redis/redis-persistent.conf
     environment:
       - REDIS_REPLICATION_MODE=master
     volumes:
-      - '/srv/redis-persistent/etc/redis:/etc/redis'
       - '/srv/redis-persistent/redis-data:/var/lib/redis'
     ports:
       - '6380:6380'
@@ -77,8 +75,8 @@ services:
     restart: always
     privileged: true
     build:
-      context: ./dockerfiles
-      dockerfile: Dockerfile-arancino.dockerfile
+      context: .
+      dockerfile: dockerfiles/Dockerfile-arancino.dockerfile
     image: smartmeio/arancino:2.2.0
     command: /bin/bash -c 'gunicorn -c "$ARANCINOCONF/gunicorn.cfg.py" arancino.ArancinoStart:app'
     environment:
@@ -91,6 +89,8 @@ services:
       - '/srv/arancino/etc/config:/etc/arancino/config'
       - '/srv/arancino/var/log/arancino:/var/log/arancino'
       - '/dev:/dev'
+      # - '/dev/bus:/dev/bus:ro'
+      # - '/dev/serial:/dev/serial:ro'
     depends_on:
       - redis-volatile
       - redis-persistent

@@ -58,6 +58,11 @@ services:
     depends_on:
       - redis-volatile
       - redis-persistent
+    volumes:
+      - '/srv/arancino/var/log/arancino:/var/log/arancino'
+      - '/dev:/dev'
+      # - '/dev/bus:/dev/bus:ro'
+      # - '/dev/serial:/dev/serial:ro'
     ports:
       - '1475:1475'
     networks:
@@ -65,5 +70,5 @@ services:
 
 networks:
   default:
-    name: arancino-module-network
+    name: arancino-network
     driver: 'bridge'
