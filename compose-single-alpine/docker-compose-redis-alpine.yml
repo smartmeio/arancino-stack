@@ -1,0 +1,46 @@
+##############################################
+#                                            #
+# docker-compose.yml for Arancino Ecosystem  #
+#                                            #
+##############################################
+
+version: '3.7'
+services:
+  redis-volatile:
+    container_name: redis-volatile-arancino
+    restart: always
+    build:
+      context: ../
+      dockerfile: dockerfiles-alpine/Dockerfile-redis-volatile-alpine.dockerfile
+    image: smartmeio/redis-volatile:6.0.10-alpine
+    command: redis-server /etc/redis/redis-volatile.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    volumes:
+      - '${HOME}/docker/redis-volatile/redis-data:/var/lib/redis/'
+    ports:
+      - '6379:6379'
+    networks:
+      - 'default'
+
+  redis-persistent:
+    container_name: redis-persistent-arancino
+    restart: always
+    build:
+      context: ../
+      dockerfile: dockerfiles-alpine/Dockerfile-redis-persistent-alpine.dockerfile
+    image: smartmeio/redis-persistent:6.0.10-alpine
+    command: redis-server /etc/redis/redis-persistent.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    volumes:
+       - '${HOME}/docker/redis-persistent/redis-data:/var/lib/redis/'
+    ports:
+      - '6380:6380'
+    networks:
+      - 'default'
+
+networks:
+  default:
+    name: arancino-network
+    driver: 'bridge'
