@@ -42,5 +42,5 @@ services:
 
 networks:
   default:
-    name: arancino-redis-network
+    name: arancino-network
     driver: 'bridge'
