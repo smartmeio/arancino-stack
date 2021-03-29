@@ -5,11 +5,11 @@ services:
     restart: always
     image: xddeng/rediseen:latest
     environment:
-      - REDISEEN_REDIS_URI="redis://:@redis-volatile-arancino:6379"
+      - REDISEEN_REDIS_URI=redis://:@redis-volatile-arancino:6379
       - REDISEEN_DB_EXPOSED=0
       - REDISEEN_KEY_PATTERN_EXPOSED="^key:([0-9a-z]+)"
     ports:
-      - '8080:8080'
+      - '8000:8000'
     networks:
       - 'default'
 
