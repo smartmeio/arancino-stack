@@ -1,0 +1,75 @@
+##############################################
+#                                            #
+# docker-compose.yml for Arancino Ecosystem  #
+#                                            #
+##############################################
+
+version: '3.7'
+services:
+  redis-volatile:
+    container_name: redis-volatile-arancino
+    restart: always
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-redis-volatile.dockerfile
+    image: smartmeio/redis-volatile:6.0.10
+    command: redis-server /etc/redis/redis-volatile.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    volumes:
+      - '/srv/redis-volatile/redis-data:/var/lib/redis'
+    ports:
+      - '6379:6379'
+    networks:
+      - 'default'
+
+  redis-persistent:
+    container_name: redis-persistent-arancino
+    restart: always
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-redis-persistent.dockerfile
+    image: smartmeio/redis-persistent:6.0.10
+    command: redis-server /etc/redis/redis-persistent.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    volumes:
+      - '/srv/redis-persistent/redis-data:/var/lib/redis'
+    ports:
+      - '6380:6380'
+    networks:
+      - 'default'
+
+  arancino-systemd:
+    container_name: arancino-systemd
+    restart: always
+    privileged: true
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-arancino-systemd.dockerfile
+    image: smartmeio/arancino-systemd:2.3.0-test.2
+    # command: gunicorn -c /etc/arancino/config/gunicorn.cfg.py arancino.ArancinoStart:app
+    environment:
+      - ARANCINO=/etc/arancino
+      - ARANCINOCONF=/etc/arancino/config
+      - ARANCINOLOG=/var/log/arancino
+      - ARANCINOENV=PROD
+      - FLASK_ENV=production
+    depends_on:
+      - redis-volatile
+      - redis-persistent
+    volumes:
+      - '/srv/arancino-systemd/var/log/arancino:/var/log/arancino'
+      - '/dev:/dev'
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+      # - '/dev/bus:/dev/bus:ro'
+      # - '/dev/serial:/dev/serial:ro'
+    ports:
+      - '1476:1475'
+    networks:
+      - 'default'
+
+networks:
+  default:
+    name: arancino-network
+    driver: 'bridge'
