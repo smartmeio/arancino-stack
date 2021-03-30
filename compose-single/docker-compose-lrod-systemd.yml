@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  lrod-systemd:
+    container_name: lrod-systemd
+    restart: always
+    privileged: true
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-lrod-systemd.dockerfile
+    image: smartmeio/lrod-systemd:0.4.17
+    # command: lightning-rod
+    volumes:
+      - '/srv/lrod-systemd/var/log/iotronic:/var/log/iotronic'
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+      # - '/srv/lrod/etc/iotronic:/etc/iotronic'
+      # - '/srv/lrod/var/lib/iotronic:/var/lib/iotronic'
+    ports:
+      - '1478:1474'
+    networks:
+      - 'default'
+
+networks:
+  default:
+    name: arancino-network
+    driver: 'bridge'
