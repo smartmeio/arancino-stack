@@ -6,15 +6,26 @@ ARG uid=1000
 ARG gid=1000
 ARG ARANCINO_HOME=/home/me
 
+ENV TZ 'Europe/Rome'
+
 RUN : \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         software-properties-common vim wget nano curl python3-dev python3-distutils \
-        python3-distro python3-distro-info build-essential \
+        python3-distro python3-distro-info python3-psutil build-essential \
         certbot python3-certbot-nginx sudo net-tools telnet procps coreutils \
+        systemd systemd-sysv bash-completion apt-utils nodejs npm tzdata \
+        dsniff git ntpdate lsof gdb screen libffi-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && :
+
+RUN echo $TZ > /etc/timezone \
+    && rm -f /etc/localtime \
+    && ln -nfs /usr/share/zoneinfo/$TZ /etc/localtime \
+    && dpkg-reconfigure -f noninteractive tzdata
+
+RUN npm install -g --unsafe @mdslab/wstun@1.0.11 && npm cache --force clean
 
 RUN : \
     && sed -i 's/# server_names_hash_bucket_size 64;/server_names_hash_bucket_size 64;/g' /etc/nginx/nginx.conf \

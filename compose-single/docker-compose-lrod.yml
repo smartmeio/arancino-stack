@@ -9,9 +9,9 @@ services:
     image: smartmeio/lrod:0.4.17
     command: lightning-rod
     volumes:
-      - '/srv/lrod/etc/iotronic:/etc/iotronic'
       - '/srv/lrod/var/log/iotronic:/var/log/iotronic'
-      - '/srv/lrod/var/lib/iotronic:/var/lib/iotronic'
+      # - '/srv/lrod/etc/iotronic:/etc/iotronic'
+      # - '/srv/lrod/var/lib/iotronic:/var/lib/iotronic'
     ports:
       - '1474:1474'
     networks:
