@@ -47,7 +47,7 @@ services:
     build:
       context: ../
       dockerfile: dockerfiles/Dockerfile-arancino.dockerfile
-    image: smartmeio/arancino:2.2.0
+    image: smartmeio/arancino:2.3.0-test.2
     command: gunicorn -c /etc/arancino/config/gunicorn.cfg.py arancino.ArancinoStart:app
     environment:
       - ARANCINO=/etc/arancino
