@@ -6,16 +6,24 @@ ARG uid=1000
 ARG gid=1000
 ARG ARANCINO_HOME=/home/me
 
+ENV TZ 'Europe/Rome'
+
 RUN : \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         software-properties-common vim wget nano curl python3-dev python3-distutils \
-        python3-distro python3-distro-info build-essential \
+        python3-distro python3-distro-info python3-psutil build-essential \
         certbot python3-certbot-nginx sudo net-tools telnet procps coreutils \
-        systemd systemd-sysv bash-completion apt-utils \
+        systemd systemd-sysv bash-completion apt-utils curl tzdata \
+        dsniff git ntpdate lsof gdb screen libffi-dev dialog \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
+
+RUN echo $TZ > /etc/timezone \
+    && rm -f /etc/localtime \
+    && ln -nfs /usr/share/zoneinfo/$TZ /etc/localtime \
+    && dpkg-reconfigure -f noninteractive tzdata
 
 RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /etc/systemd/system/*.wants/* \
@@ -24,6 +32,13 @@ RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /lib/systemd/system/sockets.target.wants/*initctl* \
     /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
     /lib/systemd/system/systemd-update-utmp*
+
+RUN curl -fsSL https://deb.nodesource.com/setup_10.x | bash - \
+    && apt-get install -y nodejs \
+    && npm config set loglevel http \
+    && npm config set unsafe-perm true \
+    && npm install -g npm@7.7.6 \
+    && npm install -g --unsafe @mdslab/wstun@1.0.11 && npm cache --force clean
 
 RUN : \
     && sed -i 's/# server_names_hash_bucket_size 64;/server_names_hash_bucket_size 64;/g' /etc/nginx/nginx.conf \
@@ -44,25 +59,26 @@ RUN mkdir -p $ARANCINO_HOME \
 # getting artik sudoer permissions
 RUN echo "me ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-# Jenkins home directory is a volume, so configuration and build history
-# can be persisted and survive image upgrades
-# VOLUME $ARANCINO_HOME
-
+# installing pip3
 RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
-
 COPY ./files/pip.conf /etc/pip.conf
 
+# installing lightning-rod
 RUN pip3 install -v --no-cache-dir iotronic-lightningrod==0.4.17
+COPY ./files/lr_install.py /usr/local/bin/lr_install
+RUN chmod +x /usr/local/bin/lr_install && lr_install
 
-COPY ./files/lr_install_systemd.py /usr/local/bin/lr_install
-RUN chmod +x /usr/local/bin/lr_install && lr_install 
-
+# installing lightning-rod executable
 COPY ./files/lightning-rod.py /usr/local/bin/lightning-rod
 RUN chmod +x /usr/local/bin/lightning-rod
 
+# installing lightning-rod systemd service
 COPY ./files/lightning-rod.service /etc/systemd/system
+RUN systemctl enable lightning-rod.service nginx.service
 
-VOLUME [ "/sys/fs/cgroup" ]
+# Jenkins home directory is a volume, so configuration and build history
+# can be persisted and survive image upgrades
+VOLUME [ "$ARANCINO_HOME" , "/sys/fs/cgroup" ]
 
 # USER ${user}
 
