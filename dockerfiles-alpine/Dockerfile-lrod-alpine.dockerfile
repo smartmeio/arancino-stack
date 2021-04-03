@@ -1,4 +1,4 @@
-FROM alpine:3.13.3
+FROM alpine:3.10.8
 
 ARG user=me
 ARG group=me
@@ -11,12 +11,20 @@ RUN : \
     && apk add vim wget nano curl python3 python3-dev rust linux-pam \
         gcc musl-dev linux-headers procps coreutils cargo bash nginx \
         sudo net-tools libffi libffi-dev openssl openssl-dev sed \
+        nodejs nodejs-dev nodejs-doc npm \
+    && :
+
+RUN : \
+    && npm config set loglevel http \
+    && npm config set unsafe-perm true \
+    && npm install -g --unsafe @mdslab/wstun@1.0.11 \
+    && npm cache --force clean \
     && :
 
 RUN : \
     && sed -i 's/# server_names_hash_bucket_size 64;/server_names_hash_bucket_size 64;/g' /etc/nginx/nginx.conf \
-    && sed -i "s|listen 80 default_server;|listen 50000 default_server;|g" /usr/share/nginx/http-default_server.conf \
-    && sed -i "s|80 default_server;|50000 default_server;|g" /usr/share/nginx/http-default_server.conf \
+    && sed -i "s|listen 80 default_server;|listen 50000 default_server;|g" /etc/nginx/conf.d/default.conf \
+    && sed -i "s|80 default_server;|50000 default_server;|g" /etc/nginx/conf.d/default.conf \
     && :
 
 # Jenkins is run with user `jenkins`, uid = 1000
