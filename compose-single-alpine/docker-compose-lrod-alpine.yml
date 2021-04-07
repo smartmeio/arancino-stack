@@ -11,7 +11,7 @@ services:
     volumes:
       # - '/srv/docker/lrod/etc/iotronic:/etc/iotronic'
       - '/srv/docker/lrod/var/log/iotronic:/var/log/iotronic'
-      - '/srv/docker/lrod/var/lib/iotronic:/var/lib/iotronic'
+      # - '/srv/docker/lrod/var/lib/iotronic:/var/lib/iotronic'
     ports:
       - '1474:1474'
     networks:
