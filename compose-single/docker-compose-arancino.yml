@@ -40,6 +40,35 @@ services:
     networks:
       - 'default'
 
+  rediseen-volatile:
+    container_name: rediseen-volatile-arancino
+    restart: always
+    image: xddeng/rediseen:latest
+    environment:
+      - REDISEEN_REDIS_URI=redis://:@redis-volatile-arancino:6379
+      - REDISEEN_DB_EXPOSED=0-5
+      - REDISEEN_KEY_PATTERN_EXPOSE_ALL=true
+      - REDISEEN_HOST=0.0.0.0
+    ports:
+      - '8000:8000'
+    networks:
+      - 'default'
+
+  rediseen-persistent:
+    container_name: rediseen-persistent-arancino
+    restart: always
+    image: xddeng/rediseen:latest
+    environment:
+      - REDISEEN_REDIS_URI=redis://:@redis-persistent-arancino:6380
+      - REDISEEN_DB_EXPOSED=0-5
+      - REDISEEN_KEY_PATTERN_EXPOSE_ALL=true
+      - REDISEEN_HOST=0.0.0.0
+      - REDISEEN_PORT=8001
+    ports:
+      - '8001:8001'
+    networks:
+      - 'default'
+
   arancino:
     container_name: arancino
     restart: always
@@ -47,7 +76,7 @@ services:
     build:
       context: ../
       dockerfile: dockerfiles/Dockerfile-arancino.dockerfile
-    image: smartmeio/arancino:2.3.0-test.2
+    image: smartmeio/arancino:2.3.0
     command: gunicorn -c /etc/arancino/config/gunicorn.cfg.py arancino.ArancinoStart:app
     environment:
       - ARANCINO=/etc/arancino
@@ -58,6 +87,8 @@ services:
     depends_on:
       - redis-volatile
       - redis-persistent
+      - rediseen-volatile
+      - rediseen-persistent
     volumes:
       - '/srv/arancino/var/log/arancino:/var/log/arancino'
       - '/dev:/dev'
