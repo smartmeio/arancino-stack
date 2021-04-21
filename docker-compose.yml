@@ -15,9 +15,9 @@ services:
     image: smartmeio/lrod:0.4.17
     command: lightning-rod
     volumes:
-      - '/srv/lrod/etc/iotronic:/etc/iotronic'
+      # - '/srv/lrod/etc/iotronic:/etc/iotronic'
       - '/srv/lrod/var/log/iotronic:/var/log/iotronic'
-      - '/srv/lrod/var/lib/iotronic:/var/lib/iotronic'
+      # - '/srv/lrod/var/lib/iotronic:/var/lib/iotronic'
     ports:
       - '1474:1474'
     networks:
@@ -57,16 +57,36 @@ services:
     networks:
       - 'default'
 
-  rediseen:
-    container_name: rediseen-arancino
+  rediseen-volatile:
+    container_name: rediseen-volatile-arancino
     restart: always
     image: xddeng/rediseen:latest
     environment:
-      - REDISEEN_REDIS_URI="redis://:@redis-server:6379"
-      - REDISEEN_DB_EXPOSED=0
-      - REDISEEN_KEY_PATTERN_EXPOSED="^key:([0-9a-z]+)"
+      - REDISEEN_REDIS_URI=redis://:@redis-volatile-arancino:6379
+      - REDISEEN_DB_EXPOSED=0-5
+      - REDISEEN_KEY_PATTERN_EXPOSE_ALL=true
+      - REDISEEN_HOST=0.0.0.0
+    depends_on:
+      - redis-volatile
     ports:
-      - '8080:8080'
+      - '8000:8000'
+    networks:
+      - 'default'
+
+  rediseen-persistent:
+    container_name: rediseen-persistent-arancino
+    restart: always
+    image: xddeng/rediseen:latest
+    environment:
+      - REDISEEN_REDIS_URI=redis://:@redis-persistent-arancino:6380
+      - REDISEEN_DB_EXPOSED=0-5
+      - REDISEEN_KEY_PATTERN_EXPOSE_ALL=true
+      - REDISEEN_HOST=0.0.0.0
+      - REDISEEN_PORT=8001
+    depends_on:
+      - redis-persistent
+    ports:
+      - '8001:8001'
     networks:
       - 'default'
 
@@ -77,8 +97,8 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile-arancino.dockerfile
-    image: smartmeio/arancino:2.2.0
-    command: /bin/bash -c 'gunicorn -c "$ARANCINOCONF/gunicorn.cfg.py" arancino.ArancinoStart:app'
+    image: smartmeio/arancino:2.3.0
+    command: /bin/bash -c 'gunicorn -c "/etc/arancino/config/gunicorn.cfg.py" arancino.ArancinoStart:app'
     environment:
       - ARANCINO=/etc/arancino
       - ARANCINOCONF=/etc/arancino/config
@@ -86,7 +106,7 @@ services:
       - ARANCINOENV=PROD
       - FLASK_ENV=production
     volumes:
-      - '/srv/arancino/etc/config:/etc/arancino/config'
+      # - '/srv/arancino/etc/config:/etc/arancino/config'
       - '/srv/arancino/var/log/arancino:/var/log/arancino'
       - '/dev:/dev'
       # - '/dev/bus:/dev/bus:ro'
@@ -94,7 +114,8 @@ services:
     depends_on:
       - redis-volatile
       - redis-persistent
-      - rediseen
+      - rediseen-volatile
+      - rediseen-persistent
     ports:
       - '1475:1475'
     networks:
