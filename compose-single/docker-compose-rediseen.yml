@@ -1,15 +1,36 @@
 version: '3.7'
 services:
-  rediseen:
-    container_name: rediseen-arancino
+  rediseen-volatile:
+    container_name: rediseen-volatile-arancino
     restart: always
     image: xddeng/rediseen:latest
     environment:
-      - REDISEEN_REDIS_URI=redis://:@redis-volatile-arancino:6379
-      - REDISEEN_DB_EXPOSED=0
-      - REDISEEN_KEY_PATTERN_EXPOSED="^key:([0-9a-z]+)"
+      - REDISEEN_REDIS_URI=redis://:@redis-volatile:6379
+      - REDISEEN_DB_EXPOSED=0-5
+      # - REDISEEN_KEY_PATTERN_EXPOSED=^key:([0-9a-z]+)
+      - REDISEEN_KEY_PATTERN_EXPOSE_ALL=true
+      - REDISEEN_HOST=0.0.0.0
     ports:
       - '8000:8000'
+    depends_on:
+      - redis-volatile
+    networks:
+      - 'default'
+
+  redis-volatile:
+    container_name: redis-volatile-arancino
+    restart: always
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-redis-volatile.dockerfile
+    image: smartmeio/redis-volatile:6.0.10
+    command: redis-server /etc/redis/redis-volatile.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    volumes:
+      - '/srv/redis-volatile/redis-data:/var/lib/redis/'
+    ports:
+      - '6379:6379'
     networks:
       - 'default'
 
