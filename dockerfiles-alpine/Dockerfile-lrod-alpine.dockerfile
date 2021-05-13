@@ -1,4 +1,4 @@
-FROM alpine:3.10.8
+FROM alpine:3.10.9
 
 ARG user=me
 ARG group=me
@@ -8,8 +8,8 @@ ARG ARANCINO_HOME=/home/me
 
 RUN : \
     && apk update \
-    && apk add vim wget nano curl python3 python3-dev rust linux-pam \
-        gcc musl-dev linux-headers procps coreutils cargo bash nginx \
+    && apk add vim wget nano curl python3 python3-dev linux-pam \
+        gcc musl-dev linux-headers procps coreutils bash nginx \
         sudo net-tools libffi libffi-dev openssl openssl-dev sed \
         nodejs nodejs-dev nodejs-doc npm \
     && :

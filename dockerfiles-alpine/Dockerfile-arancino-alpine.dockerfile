@@ -1,9 +1,9 @@
-FROM alpine:3.10.8
+FROM alpine:3.10.9
 
 RUN : \
     && apk update \
-    && apk add vim wget nano curl python3 python3-dev rust linux-pam \
-        gcc musl-dev linux-headers procps coreutils cargo bash \
+    && apk add vim wget nano curl python3 python3-dev linux-pam \
+        gcc musl-dev linux-headers procps coreutils bash \
         sudo net-tools libffi libffi-dev openssl openssl-dev sed \
     && :
 
