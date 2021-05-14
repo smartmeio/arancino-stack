@@ -13,7 +13,7 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile-lrod.dockerfile
     image: smartmeio/lrod:0.4.17
-    command: lightning-rod
+    command: startLR
     volumes:
       # - '/srv/lrod/etc/iotronic:/etc/iotronic'
       - '/srv/lrod/var/log/iotronic:/var/log/iotronic'
