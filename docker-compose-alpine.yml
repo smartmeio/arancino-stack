@@ -60,7 +60,7 @@ services:
   rediseen-volatile:
     container_name: rediseen-volatile-arancino
     restart: always
-    image: xddeng/rediseen:latest
+    image: smartmeio/rediseen:2.4.0
     environment:
       - REDISEEN_REDIS_URI=redis://:@redis-volatile-arancino:6379
       - REDISEEN_DB_EXPOSED=0-5
@@ -76,7 +76,7 @@ services:
   rediseen-persistent:
     container_name: rediseen-persistent-arancino
     restart: always
-    image: xddeng/rediseen:latest
+    image: smartmeio/rediseen:2.4.0
     environment:
       - REDISEEN_REDIS_URI=redis://:@redis-persistent-arancino:6379
       - REDISEEN_DB_EXPOSED=0-5
