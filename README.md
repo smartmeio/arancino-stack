@@ -58,3 +58,21 @@ tail -f /var/log/arancino/arancino.log
 ```
 
 what we expect, of course, is to get the MCU firmware interacting with the python module as it should on a physical Arancino main board.
+
+## How to run without building the docker layer images
+
+* Install docker on your system as described [here](https://docs.docker.com/get-docker/)
+* Install docker-compose on your system as described [here](https://docs.docker.com/compose/install/)
+* `cd` into the root folder of this project
+* and then run:
+```bash
+docker-compose -f docker-compose-no-build.yml up -d
+```
+to build-up the container stack based on Debian Buster.
+
+* instead run:
+```bash
+docker-compose -f docker-compose-alpine-no-build.yml up -d
+```
+
+to build-up the container stack based on Alpine Linux.
