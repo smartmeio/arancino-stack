@@ -11,7 +11,7 @@ else
 fi
 
 # Start the first process
-mkdir -b /run/nginx
+mkdir -p /run/nginx
 /usr/sbin/nginx
 status=$?
 if [ $status -ne 0 ]; then
