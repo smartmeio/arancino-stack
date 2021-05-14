@@ -5,6 +5,7 @@ ARG group=me
 ARG uid=1000
 ARG gid=1000
 ARG ARANCINO_HOME=/home/me
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST 1
 
 RUN : \
     && apk update \
@@ -53,6 +54,9 @@ RUN pip3 install -v --no-cache-dir certbot==0.31 certbot-nginx==0.31 \
 COPY ./files/lr_install.py /usr/local/bin/lr_install
 
 RUN chmod +x /usr/local/bin/lr_install && lr_install
+
+COPY ./files/startLR-alpine.sh /usr/local/bin/startLR
+RUN chmod +x /usr/local/bin/startLR
 
 # USER ${user}
 

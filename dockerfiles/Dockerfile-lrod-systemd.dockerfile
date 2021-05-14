@@ -7,6 +7,7 @@ ARG gid=1000
 ARG ARANCINO_HOME=/home/me
 
 ENV TZ 'Europe/Rome'
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST 1
 
 RUN : \
     && apt-get update \
@@ -14,8 +15,9 @@ RUN : \
         software-properties-common vim wget nano curl python3-dev python3-distutils \
         python3-distro python3-distro-info python3-psutil build-essential \
         certbot python3-certbot-nginx sudo net-tools telnet procps coreutils \
-        systemd systemd-sysv bash-completion apt-utils curl tzdata \
-        dsniff git ntpdate lsof gdb screen libffi-dev dialog \
+				systemd systemd-sysv bash-completion apt-utils curl tzdata cargo \
+        dsniff git ntpdate lsof gdb screen libffi-dev dialog psmisc psutils \
+				rustc librust-openssl-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
@@ -71,6 +73,9 @@ RUN chmod +x /usr/local/bin/lr_install && lr_install
 # installing lightning-rod executable
 COPY ./files/lightning-rod.py /usr/local/bin/lightning-rod
 RUN chmod +x /usr/local/bin/lightning-rod
+
+COPY ./files/startLR.sh /usr/local/bin/startLR
+RUN chmod +x /usr/local/bin/startLR
 
 # installing lightning-rod systemd service
 COPY ./files/lightning-rod.service /etc/systemd/system
