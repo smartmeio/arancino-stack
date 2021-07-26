@@ -76,3 +76,17 @@ docker-compose -f docker-compose-alpine-no-build.yml up -d
 ```
 
 to build-up the container stack based on Alpine Linux.
+
+## Final notes for Mac OSX
+
+Please note that under OSX, due to the specific system design, all volumes starting with the prefix:
+
+**/srv/**
+
+should be pointing at:
+
+**./srv/**
+
+instead, since this given system folder is not part of the Apple unix filesystem.
+
+So, before firing up the whole ecosystem, please rename accordingly the volume definition so they point to local folders residing inside the source code main folder instead.
