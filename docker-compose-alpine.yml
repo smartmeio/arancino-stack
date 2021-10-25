@@ -16,7 +16,7 @@ services:
     command: startLR
     volumes:
       # - '/srv/lrod/etc/iotronic:/etc/iotronic'
-      - '/srv/lrod/var/log/iotronic:/var/log/iotronic'
+      - './srv/lrod/var/log/iotronic:/var/log/iotronic'
       # - '/srv/lrod/var/lib/iotronic:/var/lib/iotronic'
     ports:
       - '1474:1474'
@@ -29,12 +29,12 @@ services:
     build:
       context: .
       dockerfile: dockerfiles-alpine/Dockerfile-redis-volatile-alpine.dockerfile
-    image: smartmeio/redis-volatile:6.0.10-alpine
+    image: smartmeio/redis-volatile:6.0.16-alpine
     command: redis-server /etc/redis/redis-volatile.conf
     environment:
       - REDIS_REPLICATION_MODE=master
     volumes:
-      - '/srv/redis-volatile/redis-data:/var/lib/redis'
+      - './srv/redis-volatile/redis-data:/var/lib/redis'
     ports:
       - '6379:6379'
     networks:
@@ -46,12 +46,12 @@ services:
     build:
       context: .
       dockerfile: dockerfiles-alpine/Dockerfile-redis-persistent-alpine.dockerfile
-    image: smartmeio/redis-persistent:6.0.10-alpine
+    image: smartmeio/redis-persistent:6.0.16-alpine
     command: redis-server /etc/redis/redis-persistent.conf
     environment:
       - REDIS_REPLICATION_MODE=master
     volumes:
-      - '/srv/redis-persistent/redis-data:/var/lib/redis'
+      - './srv/redis-persistent/redis-data:/var/lib/redis'
     ports:
       - '6380:6380'
     networks:
@@ -107,7 +107,7 @@ services:
       - FLASK_ENV=production
     volumes:
       # - '/srv/arancino/etc/config:/etc/arancino/config'
-      - '/srv/arancino/var/log/arancino:/var/log/arancino'
+      - './srv/arancino/var/log/arancino:/var/log/arancino'
       - '/dev:/dev'
       # - '/dev/bus:/dev/bus:ro'
       # - '/dev/serial:/dev/serial:ro'
@@ -120,6 +120,44 @@ services:
       - '1475:1475'
     networks:
       - 'default'
+
+  mosquitto:
+    container_name: mosquitto-arancino
+    restart: always
+    image: eclipse-mosquitto:2.0.12-openssl
+    volumes:
+      - 'mosquitto_conf:/mosquitto/config'
+      - 'mosquitto_data:/mosquitto/data'
+      - 'mosquitto_log:/mosquitto/log'
+    ports:
+      - 1883:1883
+      - 8883:8883
+      - 9001:9001
+    networks:
+      - 'default'
+
+  node-red:
+    container_name: node-red-arancino
+    restart: always
+    image: nodered/node-red:2.0.6-12
+    environment:
+    depends_on:
+    volumes:
+      - node_red_data:/data
+    ports:
+      - 1880:1880
+    networks:
+      - 'default'
+
+volumes:
+  node_red_data:
+    name: node_red_data
+  mosquitto_conf:
+    name: mosquitto_conf
+  mosquitto_data:
+    name: mosquitto_data
+  mosquitto_log:
+    name: mosquitto_log
 
 networks:
   default:
