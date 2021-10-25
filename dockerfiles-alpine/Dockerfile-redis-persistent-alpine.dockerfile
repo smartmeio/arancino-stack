@@ -8,7 +8,7 @@ COPY ./files/redis-persistent.conf /etc/redis
 COPY ./files/docker-entrypoint-aof-alpine.sh /usr/local/bin/
 ENTRYPOINT ["docker-entrypoint-aof-alpine.sh"]
 
-ADD ./files/redistimeseries.Linux-x86_64-musl.1.4.8.tar.gz /lib/redis/plugins/
+ADD ./files/redistimeseries.Linux-x86_64-musl.1.6.0.tar.gz /lib/redis/plugins/
 
 EXPOSE 6380
 CMD ["redis-server"]
