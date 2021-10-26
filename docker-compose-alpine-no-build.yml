@@ -109,33 +109,31 @@ services:
     networks:
       - 'default'
 
-    mosquitto:
-      container_name: mosquitto-arancino
-      restart: always
-      image: eclipse-mosquitto:2.0.12-openssl
-      volumes:
-        - 'mosquitto_conf:/mosquitto/config'
-        - 'mosquitto_data:/mosquitto/data'
-        - 'mosquitto_log:/mosquitto/log'
-      ports:
-        - 1883:1883
-        - 8883:8883
-        - 9001:9001
-      networks:
-        - 'default'
+  mosquitto:
+    container_name: mosquitto-arancino
+    restart: always
+    image: eclipse-mosquitto:2.0.12-openssl
+    volumes:
+      - 'mosquitto_conf:/mosquitto/config'
+      - 'mosquitto_data:/mosquitto/data'
+      - 'mosquitto_log:/mosquitto/log'
+    ports:
+      - 1883:1883
+      - 8883:8883
+      - 9001:9001
+    networks:
+      - 'default'
 
-    node-red:
-      container_name: node-red-arancino
-      restart: always
-      image: nodered/node-red:2.0.6-12
-      environment:
-      depends_on:
-      volumes:
-        - node_red_data:/data
-      ports:
-        - 1880:1880
-      networks:
-        - 'default'
+  node-red:
+    container_name: node-red-arancino
+    restart: always
+    image: nodered/node-red:2.0.6-12
+    volumes:
+      - node_red_data:/data
+    ports:
+      - 1880:1880
+    networks:
+      - 'default'
 
 volumes:
   node_red_data:

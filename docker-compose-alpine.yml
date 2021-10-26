@@ -140,8 +140,6 @@ services:
     container_name: node-red-arancino
     restart: always
     image: nodered/node-red:2.0.6-12
-    environment:
-    depends_on:
     volumes:
       - node_red_data:/data
     ports:
