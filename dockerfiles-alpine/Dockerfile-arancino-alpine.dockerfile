@@ -1,7 +1,7 @@
 ################################
 # Upload tools builder Section #
 ################################
-FROM alpine:3.10.9 as builder
+FROM alpine:3.14.2 as builder
 
 RUN echo "cross-build-start"
 
@@ -11,26 +11,6 @@ RUN : \
 		autoconf m4 gettext libtool automake libusb libusb-dev \
 	&& :
 
-# build openocd
-RUN apk --no-cache add --virtual runtime-dependencies \
-      libusb \
-      libftdi1 \
-    && apk --no-cache add --virtual build-dependencies \
-      git \
-      build-base \
-      libusb-dev \
-      libftdi1-dev \
-      automake \
-      autoconf \
-      libtool \
-	&& git clone --depth 1 git://repo.or.cz/openocd.git -b v0.11.0 openocd \
-    && cd /openocd \
-    && ./bootstrap \
-    && ./configure \
-    && make -j3 \
-    && cd /
-
-# build dfu-util-stm32
 RUN git clone https://github.com/artynet/dfu-util-official.git -b smartme-stm32 dfu-util \
 	&& cd /dfu-util \
 	&& ./autogen.sh \
@@ -49,14 +29,14 @@ RUN echo "cross-build-end"
 ####################
 # Arancino Section #
 ####################
-FROM alpine:3.10.9
+FROM alpine:3.14.2
 
 RUN : \
     && apk update \
     && apk add vim wget nano curl python3 python3-dev linux-pam \
         gcc musl-dev linux-headers procps coreutils bash shadow \
         sudo net-tools libffi libffi-dev openssl openssl-dev sed \
-        libusb libusb-dev libftdi1 libftdi1-dev avrdude \
+        libusb libusb-dev libftdi1 libftdi1-dev avrdude openocd \
     && :
 
 ARG user=me
@@ -83,9 +63,6 @@ RUN mkdir -p $ARANCINO_HOME \
 ENV BINDIR /usr/bin/
 COPY --from=builder /BOSSA/bin/bossac "$BINDIR"
 
-# openocd copy from builder
-COPY --from=builder /openocd/src/openocd "$BINDIR"
-
 # dfu-util-stm32 copy from builder
 COPY --from=builder /dfu-util/src/dfu-* "$BINDIR"
 
@@ -94,7 +71,8 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 
 COPY ./files/pip.conf /etc/pip.conf
 
-RUN pip3 install -v arancino==2.3.0 adafruit-nrfutil
+RUN pip3 install -v -U pip \
+	&& pip3 install -v arancino==2.3.0 adafruit-nrfutil
 
 COPY ./files/arancino.prod.cfg /etc/arancino/config/arancino.prod.cfg
 COPY ./files/arancino.dev.cfg /etc/arancino/config/arancino.dev.cfg
