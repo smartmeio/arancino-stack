@@ -9,6 +9,7 @@ services:
   lrod:
     container_name: lrod
     restart: always
+    privileged: true
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile-lrod.dockerfile

@@ -9,6 +9,7 @@ services:
   lrod:
     container_name: lrod
     restart: always
+    privileged: true
     image: smartmeio/lrod:0.4.17
     command: startLR
     volumes:
