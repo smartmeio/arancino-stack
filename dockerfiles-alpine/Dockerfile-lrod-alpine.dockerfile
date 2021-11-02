@@ -24,8 +24,8 @@ RUN : \
 
 RUN : \
     && sed -i 's/# server_names_hash_bucket_size 64;/server_names_hash_bucket_size 64;/g' /etc/nginx/nginx.conf \
-    && sed -i "s|listen 80 default_server;|listen 50000 default_server;|g" /etc/nginx/conf.d/default.conf \
-    && sed -i "s|80 default_server;|50000 default_server;|g" /etc/nginx/conf.d/default.conf \
+    && sed -i "s|listen 80 default_server;|listen 50000 default_server;|g" /usr/share/nginx/http-default_server.conf \
+    && sed -i "s|80 default_server;|50000 default_server;|g" /usr/share/nginx/http-default_server.conf \
     && :
 
 # Jenkins is run with user `jenkins`, uid = 1000
