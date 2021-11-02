@@ -1,4 +1,4 @@
-FROM alpine:3.10.9
+FROM alpine:3.14.2
 
 ARG user=me
 ARG group=me
