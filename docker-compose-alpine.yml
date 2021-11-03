@@ -27,6 +27,7 @@ services:
   redis-volatile:
     container_name: redis-volatile-arancino
     restart: always
+    privileged: true
     build:
       context: .
       dockerfile: dockerfiles-alpine/Dockerfile-redis-volatile-alpine.dockerfile
@@ -44,6 +45,7 @@ services:
   redis-persistent:
     container_name: redis-persistent-arancino
     restart: always
+    privileged: true
     build:
       context: .
       dockerfile: dockerfiles-alpine/Dockerfile-redis-persistent-alpine.dockerfile
@@ -61,6 +63,7 @@ services:
   rediseen-volatile:
     container_name: rediseen-volatile-arancino
     restart: always
+    privileged: true
     image: smartmeio/rediseen:2.4.0
     environment:
       - REDISEEN_REDIS_URI=redis://:@redis-volatile-arancino:6379
@@ -77,9 +80,10 @@ services:
   rediseen-persistent:
     container_name: rediseen-persistent-arancino
     restart: always
+    privileged: true
     image: smartmeio/rediseen:2.4.0
     environment:
-      - REDISEEN_REDIS_URI=redis://:@redis-persistent-arancino:6379
+      - REDISEEN_REDIS_URI=redis://:@redis-persistent-arancino:6380
       - REDISEEN_DB_EXPOSED=0-5
       - REDISEEN_KEY_PATTERN_EXPOSE_ALL=true
       - REDISEEN_HOST=0.0.0.0

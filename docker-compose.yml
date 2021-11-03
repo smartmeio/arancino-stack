@@ -27,6 +27,7 @@ services:
   redis-volatile:
     container_name: redis-volatile-arancino
     restart: always
+    privileged: true
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile-redis-volatile.dockerfile
@@ -44,6 +45,7 @@ services:
   redis-persistent:
     container_name: redis-persistent-arancino
     restart: always
+    privileged: true
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile-redis-persistent.dockerfile
@@ -61,6 +63,7 @@ services:
   rediseen-volatile:
     container_name: rediseen-volatile-arancino
     restart: always
+    privileged: true
     image: smartmeio/rediseen:2.4.0
     environment:
       - REDISEEN_REDIS_URI=redis://:@redis-volatile-arancino:6379
@@ -77,6 +80,7 @@ services:
   rediseen-persistent:
     container_name: rediseen-persistent-arancino
     restart: always
+    privileged: true
     image: smartmeio/rediseen:2.4.0
     environment:
       - REDISEEN_REDIS_URI=redis://:@redis-persistent-arancino:6380

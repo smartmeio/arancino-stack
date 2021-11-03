@@ -24,6 +24,7 @@ services:
   redis-volatile:
     container_name: redis-volatile-arancino
     restart: always
+    privileged: true
     image: smartmeio/redis-volatile:6.0.16
     command: redis-server /etc/redis/redis-volatile.conf
     environment:
@@ -38,6 +39,7 @@ services:
   redis-persistent:
     container_name: redis-persistent-arancino
     restart: always
+    privileged: true
     image: smartmeio/redis-persistent:6.0.16
     command: redis-server /etc/redis/redis-persistent.conf
     environment:
@@ -52,6 +54,7 @@ services:
   rediseen-volatile:
     container_name: rediseen-volatile-arancino
     restart: always
+    privileged: true
     image: xddeng/rediseen:latest
     environment:
       - REDISEEN_REDIS_URI=redis://:@redis-volatile-arancino:6379
@@ -68,6 +71,7 @@ services:
   rediseen-persistent:
     container_name: rediseen-persistent-arancino
     restart: always
+    privileged: true
     image: xddeng/rediseen:latest
     environment:
       - REDISEEN_REDIS_URI=redis://:@redis-persistent-arancino:6380
