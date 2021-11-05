@@ -35,7 +35,7 @@ RUN : \
         software-properties-common vim wget nano curl python3-dev python3-distutils \
         python3-distro python3-distro-info build-essential vim nano telnet net-tools \
         systemd systemd-sysv bash-completion apt-utils bossa-cli python3-pkg-resources \
-        python3-adafruit-nrfutil openocd avrdude dfu-util-stm32 \
+        python3-adafruit-nrfutil openocd avrdude dfu-util-stm32 arduinostm32load \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
@@ -57,8 +57,11 @@ RUN pip3 install -v arancino==2.3.0
 COPY ./files/arancino.prod.cfg /etc/arancino/config/arancino.prod.cfg
 COPY ./files/arancino.dev.cfg /etc/arancino/config/arancino.dev.cfg
 
+# copying upload tool scripts
 COPY ./files/run-arancino-bossac.sh /usr/bin/run-arancino-bossac
-RUN chmod +x /usr/bin/run-arancino-bossac
+COPY ./files/run-arancino-arduinoSTM32load.sh /usr/bin/run-arancino-arduinoSTM32load
+COPY ./files/run-arancino-adafruit-nrfutil.sh /usr/bin/run-arancino-adafruit-nrfutil
+RUN chmod +x /usr/bin/run-arancino-*
 
 VOLUME [ "/sys/fs/cgroup" ]
 
