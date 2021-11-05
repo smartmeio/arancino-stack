@@ -1,3 +1,19 @@
+###########################################
+# arduinoSTM32load tool gobuilder Section #
+###########################################
+FROM golang:1.17.3-alpine3.14 as gobuilder
+
+RUN echo "cross-build-start-golang"
+
+RUN apk update \
+	&& apk add git make vim nano
+
+RUN git clone https://github.com/artynet/arduino101load.git /arduinoSTM32load \
+	&& cd /arduinoSTM32load \
+	&& go build -o arduinoSTM32load
+	
+RUN echo "cross-build-end-golang"
+
 ################################
 # Upload tools builder Section #
 ################################
@@ -59,8 +75,11 @@ RUN mkdir -p $ARANCINO_HOME \
   && echo me:arancino | chpasswd \
   && echo root:arancino | chpasswd
 
-# bossac copy from builder
+# arduinoSTM32load copy from gobuilder
 ENV BINDIR /usr/bin/
+COPY --from=gobuilder /arduinoSTM32load/arduinoSTM32load "$BINDIR"
+
+# bossac copy from builder
 COPY --from=builder /BOSSA/bin/bossac "$BINDIR"
 
 # dfu-util-stm32 copy from builder
@@ -77,9 +96,11 @@ RUN pip3 install -v -U pip \
 COPY ./files/arancino.prod.cfg /etc/arancino/config/arancino.prod.cfg
 COPY ./files/arancino.dev.cfg /etc/arancino/config/arancino.dev.cfg
 
-# copying upload script
+# copying upload tool scripts
 COPY ./files/run-arancino-bossac.sh /usr/bin/run-arancino-bossac
-RUN chmod +x /usr/bin/run-arancino-bossac
+COPY ./files/run-arancino-arduinoSTM32load.sh /usr/bin/run-arancino-arduinoSTM32load
+COPY ./files/run-arancino-adafruit-nrfutil.sh /usr/bin/run-arancino-adafruit-nrfutil
+RUN chmod +x /usr/bin/run-arancino-*
 
 # Arancino home directory is a volume, so configuration and build history
 # can be persisted and survive image upgrades
