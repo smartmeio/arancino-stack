@@ -1,6 +1,6 @@
-###########################################
-# arduinoSTM32load tool gobuilder Section #
-###########################################
+###########################################################
+# arduinoSTM32load and rp2040load tools gobuilder Section #
+###########################################################
 FROM golang:1.17.3-alpine3.14 as gobuilder
 
 RUN echo "cross-build-start-golang"
@@ -11,7 +11,11 @@ RUN apk update \
 RUN git clone https://github.com/artynet/arduino101load.git /arduinoSTM32load \
 	&& cd /arduinoSTM32load \
 	&& go build -o arduinoSTM32load
-	
+
+RUN git clone https://github.com/arduino/rp2040tools.git -b 1.0.3 /rp2040tools \
+	&& cd /rp2040tools \
+	&& go build -o rp2040load
+
 RUN echo "cross-build-end-golang"
 
 ################################
@@ -25,6 +29,8 @@ RUN : \
 	&& apk update \
 	&& apk add vim wget nano curl git bash gcc g++ make \
 		autoconf m4 gettext libtool automake libusb libusb-dev \
+		gcc g++ make openssl libressl-dev musl-dev build-base \
+		bsd-compat-headers libc-dev bash-completion cmake \
 	&& :
 
 RUN git clone https://github.com/artynet/dfu-util-official.git -b smartme-stm32 dfu-util \
@@ -34,10 +40,26 @@ RUN git clone https://github.com/artynet/dfu-util-official.git -b smartme-stm32 
 	&& make -j3 \
 	&& cd /
 
-# build bossac 
+# build bossac
 RUN git clone https://github.com/artynet/BOSSA.git -b arduino-alpine \
 	&& cd /BOSSA \
 	&& make bin/bossac \
+	&& cd /
+
+# build elf2uf2
+RUN git clone https://github.com/raspberrypi/pico-sdk.git -b 1.3.0 pico-sdk \
+	&& cd /pico-sdk/tools/elf2uf2 \
+	&& mkdir build \
+	&& cd build/ && cmake ../ \
+	&& make \
+	&& cd /
+
+# build picotool
+RUN git clone https://github.com/raspberrypi/picotool.git -b 1.1.0 picotool \
+	&& cd /picotool \
+	&& mkdir build \
+	&& cd build/ && cmake -DPICO_SDK_PATH=/pico-sdk ../ \
+	&& make \
 	&& cd /
 
 RUN echo "cross-build-end"
@@ -53,6 +75,8 @@ RUN : \
         gcc musl-dev linux-headers procps coreutils bash shadow \
         sudo net-tools libffi libffi-dev openssl openssl-dev sed \
         libusb libusb-dev libftdi1 libftdi1-dev avrdude openocd \
+				g++ make libressl-dev libc-dev musl-dev build-base \
+				bsd-compat-headers bash-completion cmake \
     && :
 
 ARG user=me
@@ -79,11 +103,20 @@ RUN mkdir -p $ARANCINO_HOME \
 ENV BINDIR /usr/bin/
 COPY --from=gobuilder /arduinoSTM32load/arduinoSTM32load "$BINDIR"
 
+# rp2040load copy from gobuilder
+COPY --from=gobuilder /rp2040tools/rp2040load "$BINDIR"
+
 # bossac copy from builder
 COPY --from=builder /BOSSA/bin/bossac "$BINDIR"
 
 # dfu-util-stm32 copy from builder
 COPY --from=builder /dfu-util/src/dfu-* "$BINDIR"
+
+# elf2uf2 copy from builder
+COPY --from=builder /pico-sdk/tools/elf2uf2/build/elf2uf2 "$BINDIR"
+
+# picotool copy from builder
+COPY --from=builder /picotool/build/picotool "$BINDIR"
 
 # installing arancino
 RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
