@@ -18,7 +18,7 @@ RUN mkdir -p $ARANCINO_HOME \
   && useradd -d "$ARANCINO_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user} \
   && echo me:arancino | chpasswd \
   && echo root:arancino | chpasswd
-  
+
 # getting 'me' sudoer permissions
 RUN echo "me ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
@@ -36,6 +36,7 @@ RUN : \
         python3-distro python3-distro-info build-essential vim nano telnet net-tools \
         systemd systemd-sysv bash-completion apt-utils bossa-cli python3-pkg-resources \
         python3-adafruit-nrfutil openocd avrdude dfu-util-stm32 arduinostm32load \
+        python3-uf2conv ca-certificates ca-cacert \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
@@ -53,6 +54,8 @@ COPY ./files/arancino.dev.cfg /etc/arancino/config/arancino.dev.cfg
 COPY ./files/run-arancino-bossac.sh /usr/bin/run-arancino-bossac
 COPY ./files/run-arancino-arduinoSTM32load.sh /usr/bin/run-arancino-arduinoSTM32load
 COPY ./files/run-arancino-adafruit-nrfutil.sh /usr/bin/run-arancino-adafruit-nrfutil
+COPY ./files/run-arancino-rp2040load.sh /usr/bin/run-arancino-rp2040load
+COPY ./files/run-arancino-uf2conv.sh /usr/bin/run-arancino-uf2conv
 RUN chmod +x /usr/bin/run-arancino-*
 
 # Jenkins home directory is a volume, so configuration and build history

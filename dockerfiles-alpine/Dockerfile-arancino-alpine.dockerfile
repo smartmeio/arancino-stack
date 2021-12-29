@@ -28,9 +28,9 @@ RUN echo "cross-build-start"
 RUN : \
 	&& apk update \
 	&& apk add vim wget nano curl git bash gcc g++ make \
-		autoconf m4 gettext libtool automake libusb libusb-dev \
-		gcc g++ make openssl libressl-dev musl-dev build-base \
-		bsd-compat-headers libc-dev bash-completion cmake \
+	   autoconf m4 gettext libtool automake libusb libusb-dev \
+	   gcc g++ make openssl libressl-dev musl-dev build-base \
+	   bsd-compat-headers libc-dev bash-completion cmake \
 	&& :
 
 RUN git clone https://github.com/artynet/dfu-util-official.git -b smartme-stm32 dfu-util \
@@ -72,11 +72,11 @@ FROM alpine:3.14.2
 RUN : \
     && apk update \
     && apk add vim wget nano curl python3 python3-dev linux-pam \
-        gcc musl-dev linux-headers procps coreutils bash shadow \
-        sudo net-tools libffi libffi-dev openssl openssl-dev sed \
-        libusb libusb-dev libftdi1 libftdi1-dev avrdude openocd \
-				g++ make libressl-dev libc-dev musl-dev build-base \
-				bsd-compat-headers bash-completion cmake \
+       gcc musl-dev linux-headers procps coreutils bash shadow \
+       sudo net-tools libffi libffi-dev openssl openssl-dev sed \
+       libusb libusb-dev libftdi1 libftdi1-dev avrdude openocd \
+       g++ make libressl-dev libc-dev musl-dev build-base \
+       bsd-compat-headers bash-completion cmake \
     && :
 
 ARG user=me
@@ -130,9 +130,13 @@ COPY ./files/arancino.prod.cfg /etc/arancino/config/arancino.prod.cfg
 COPY ./files/arancino.dev.cfg /etc/arancino/config/arancino.dev.cfg
 
 # copying upload tool scripts
+COPY ./files/uf2conv.py /usr/bin/uf2conv.py
+
 COPY ./files/run-arancino-bossac.sh /usr/bin/run-arancino-bossac
 COPY ./files/run-arancino-arduinoSTM32load.sh /usr/bin/run-arancino-arduinoSTM32load
 COPY ./files/run-arancino-adafruit-nrfutil.sh /usr/bin/run-arancino-adafruit-nrfutil
+COPY ./files/run-arancino-rp2040load.sh /usr/bin/run-arancino-rp2040load
+COPY ./files/run-arancino-uf2conv.sh /usr/bin/run-arancino-uf2conv
 RUN chmod +x /usr/bin/run-arancino-*
 
 # Arancino home directory is a volume, so configuration and build history
