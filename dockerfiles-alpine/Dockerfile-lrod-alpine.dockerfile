@@ -49,7 +49,7 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 COPY ./files/pip.conf /etc/pip.conf
 
 RUN pip3 install -v --no-cache-dir certbot==0.31 certbot-nginx==0.31 \
-  cryptography==2.6.1 iotronic-lightningrod==0.4.17
+  cryptography==2.6.1 iotronic-lightningrod==0.5.0
 
 COPY ./files/lr_install.py /usr/local/bin/lr_install
 
