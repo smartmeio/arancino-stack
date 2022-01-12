@@ -13,6 +13,6 @@ if [ "$1" = 'redis-server' -a "$(id -u)" = '0' ]; then
 	exec gosu redis "$0" "$@"
 fi
 
-[ -f /etc/redis/cwd/appendonly.aof ] && redis-check-aof --fix /etc/redis/cwd/appendonly.aof
+[ -s /etc/redis/cwd/appendonly.aof ] && redis-check-aof --fix /etc/redis/cwd/appendonly.aof
 
 exec "$@"
