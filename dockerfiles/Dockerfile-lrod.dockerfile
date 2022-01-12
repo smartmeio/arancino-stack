@@ -58,7 +58,7 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 COPY ./files/pip.conf /etc/pip.conf
 
 # installing lightning-rod
-RUN pip3 install -v --no-cache-dir iotronic-lightningrod==0.5.0
+RUN pip3 install -v --no-cache-dir cryptography==3.4.8 iotronic-lightningrod==0.5.0
 COPY ./files/lr_install.py /usr/local/bin/lr_install
 RUN chmod +x /usr/local/bin/lr_install && lr_install
 
