@@ -40,7 +40,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_10.x | bash - \
     && npm config set loglevel http \
     && npm config set unsafe-perm true \
     && npm install -g npm@7.7.6 \
-    && npm install -g --unsafe @mdslab/wstun@1.0.11 && npm cache --force clean
+    && npm install -g --unsafe @mdslab/wstun@1.1.0 && npm cache --force clean
 
 RUN : \
     && sed -i 's/# server_names_hash_bucket_size 64;/server_names_hash_bucket_size 64;/g' /etc/nginx/nginx.conf \

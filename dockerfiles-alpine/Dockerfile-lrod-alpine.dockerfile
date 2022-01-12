@@ -18,7 +18,7 @@ RUN : \
 RUN : \
     && npm config set loglevel http \
     && npm config set unsafe-perm true \
-    && npm install -g --unsafe @mdslab/wstun@1.0.11 \
+    && npm install -g --unsafe @mdslab/wstun@1.1.0 \
     && npm cache --force clean \
     && :
 
