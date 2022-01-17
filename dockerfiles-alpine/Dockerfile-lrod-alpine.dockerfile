@@ -13,10 +13,10 @@ RUN : \
         gcc musl-dev linux-headers procps coreutils bash nginx \
         sudo net-tools libffi libffi-dev openssl openssl-dev sed \
         nodejs nodejs-dev nodejs-doc npm openrc nginx-mod-http-geoip2 \
-		nginx-mod-http-dav-ext nginx-mod-mail nginx-openrc \
+		nginx-mod-http-dav-ext nginx-mod-mail nginx-openrc screen \
 		nginx-mod-http-echo nginx-mod-http-image-filter nginx-mod-http-geoip \
 		nginx-mod-stream nginx-mod-http-xslt-filter nginx-vim \
-		nginx-mod-http-upstream-fair nginx-mod-stream-geoip \
+		nginx-mod-http-upstream-fair nginx-mod-stream-geoip git \
     && :
 
 # wstun setup
