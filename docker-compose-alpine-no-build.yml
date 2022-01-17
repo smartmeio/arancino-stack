@@ -10,16 +10,12 @@ services:
     container_name: lrod
     restart: always
     privileged: true
-    image: smartmeio/lrod:0.4.17-alpine
-    command: startLR
+    image: smartmeio/lrod:0.5.0-alpine
     volumes:
       # - '/srv/lrod/etc/iotronic:/etc/iotronic'
       - './srv/lrod/var/log/iotronic:/var/log/iotronic'
       # - '/srv/lrod/var/lib/iotronic:/var/lib/iotronic'
-    ports:
-      - '1474:1474'
-    networks:
-      - 'default'
+    network_mode: host
 
   redis-volatile:
     container_name: redis-volatile-arancino
