@@ -1,0 +1,45 @@
+#!/sbin/openrc-run
+# Copyright 1999-2013 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+description="LR service"
+pidfile="/run/lrod/lrod.pid"
+configfile="/etc/iotronic/iotronic.conf"
+command="/usr/local/bin/startLR"
+# command="/usr/bin/lightning-rod"
+# command_opts=" -c $configfile"
+
+start_pre() {
+    mkdir -p /run/lrod
+    touch /run/lrod/lrod.pid
+}
+
+depend() {
+    need net
+    need localmount
+}
+
+start() {
+    ebegin "Starting LR"
+    start-stop-daemon --start --background \
+    --exec $command \
+    --make-pidfile --pidfile $pidfile
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping LR"
+    start-stop-daemon --stop \
+    --exec $command \
+    --pidfile $pidfile
+    killall -q lightning-rod 2> /dev/null
+    eend $?
+}
+
+reload() {
+    ebegin "Reloading LR"
+    start-stop-daemon --exec $command \
+    --pidfile $pidfile \
+    -s 1
+    eend $?
+}

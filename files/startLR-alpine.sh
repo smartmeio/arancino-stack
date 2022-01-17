@@ -2,9 +2,11 @@
 
 # Upgrade procedures
 TEST_U=`cat /etc/iotronic/iotronic.conf  | grep autobahn`
+PYDIR=$(python3 -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
+# PYDIR=$(python3 -c "import site; print(site.getsitepackages()[0])")
 
 if [ "$TEST_U" = "" ]; then
-	cp /usr/lib/python3.7/site-packages/iotronic_lightningrod/etc/iotronic/iotronic.conf /etc/iotronic/iotronic.conf
+	cp $PYDIR/iotronic_lightningrod/etc/iotronic/iotronic.conf /etc/iotronic/iotronic.conf
 	echo "iotronic configuration updated."
 else
 	echo "Already updated."
@@ -12,12 +14,16 @@ fi
 
 # Start the first process
 mkdir -p /run/nginx
-/usr/sbin/nginx
+# /usr/sbin/nginx
+rc-update add nginx
+service nginx restart
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start NGINX: $status"
   exit $status
 fi
+
+killall -q lightning-rod 2> /dev/null
 
 # Start the second process
 /usr/bin/lightning-rod
