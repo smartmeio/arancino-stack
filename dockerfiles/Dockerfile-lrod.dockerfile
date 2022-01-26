@@ -17,7 +17,7 @@ RUN : \
         certbot python3-certbot-nginx sudo net-tools telnet procps coreutils \
         systemd systemd-sysv bash-completion apt-utils curl tzdata cargo \
         dsniff git ntpdate lsof gdb screen libffi-dev dialog psmisc psutils \
-				rustc librust-openssl-dev \
+        rustc librust-openssl-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
@@ -58,7 +58,8 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 COPY ./files/pip.conf /etc/pip.conf
 
 # installing lightning-rod
-RUN pip3 install -v --no-cache-dir cryptography==3.4.8 iotronic-lightningrod==0.5.0
+RUN pip3 install -v --no-cache-dir cryptography==3.4.8 \
+	pyOpenSSL==21.0.0 iotronic-lightningrod==0.5.0
 COPY ./files/lr_install.py /usr/local/bin/lr_install
 RUN chmod +x /usr/local/bin/lr_install && lr_install
 
