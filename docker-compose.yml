@@ -13,16 +13,13 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile-lrod.dockerfile
-    image: smartmeio/lrod:0.4.17
+    image: smartmeio/lrod:0.5.0
     command: startLR
     volumes:
       # - '/srv/lrod/etc/iotronic:/etc/iotronic'
       - './srv/lrod/var/log/iotronic:/var/log/iotronic'
       # - '/srv/lrod/var/lib/iotronic:/var/lib/iotronic'
-    ports:
-      - '1474:1474'
-    networks:
-      - 'default'
+    network_mode: host
 
   redis-volatile:
     container_name: redis-volatile-arancino
