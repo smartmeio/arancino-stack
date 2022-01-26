@@ -1,4 +1,4 @@
-FROM python:3.7-buster
+FROM python:3.7.12-slim-buster
 
 # defining user 'me'
 ARG user=me
@@ -22,8 +22,16 @@ RUN mkdir -p $ARANCINO_HOME \
 # getting 'me' sudoer permissions
 RUN echo "me ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
+RUN : \
+    && apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        gnupg apt-transport-https  \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && :
+
 # adding arancino repository
-COPY files/arancino-os-public.key /tmp
+COPY ./files/arancino-os-public.key /tmp
 
 RUN : \
     && echo "deb https://packages.smartme.io/repository/arancino-os-buster/ buster main" >> /etc/apt/sources.list.d/arancino.list \
@@ -32,11 +40,11 @@ RUN : \
 RUN : \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        software-properties-common vim wget nano curl python3-dev python3-distutils \
-        python3-distro python3-distro-info build-essential vim nano telnet net-tools \
-        systemd systemd-sysv bash-completion apt-utils bossa-cli python3-pkg-resources \
-        python3-adafruit-nrfutil openocd avrdude dfu-util-stm32 arduinostm32load \
-        python3-uf2conv ca-certificates ca-cacert \
+        vim wget nano curl arduinostm32load \
+        build-essential nano telnet net-tools  \
+        systemd systemd-sysv bash-completion apt-utils \
+        openocd avrdude dfu-util-stm32 bossa-cli \
+        ca-certificates ca-cacert libssl-dev libyaml-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
@@ -45,7 +53,7 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 
 COPY ./files/pip.conf /etc/pip.conf
 
-RUN pip3 install -v --no-cache-dir arancino==2.4.0
+RUN pip3 install -v --no-cache-dir arancino==2.4.0 adafruit-nrfutil
 
 COPY ./files/arancino.cfg /etc/arancino/config/arancino.cfg
 COPY ./files/arancino.dev.cfg /etc/arancino/config/arancino.dev.cfg
@@ -56,7 +64,9 @@ COPY ./files/run-arancino-arduinoSTM32load.sh /usr/bin/run-arancino-arduinoSTM32
 COPY ./files/run-arancino-adafruit-nrfutil.sh /usr/bin/run-arancino-adafruit-nrfutil
 COPY ./files/run-arancino-rp2040load.sh /usr/bin/run-arancino-rp2040load
 COPY ./files/run-arancino-uf2conv.sh /usr/bin/run-arancino-uf2conv
+COPY ./files/uf2conv.py /usr/bin/uf2conv.py
 RUN chmod +x /usr/bin/run-arancino-*
+RUN chmod +x /usr/bin/uf2conv.py
 
 # Jenkins home directory is a volume, so configuration and build history
 # can be persisted and survive image upgrades
