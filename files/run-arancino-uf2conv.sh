@@ -14,8 +14,8 @@ elif [[ "${2##*.}" = "uf2" ]]; then
   mv $2 /tmp/sketch.uf2
 fi
 
-echo out > /sys/class/gpio/gpio25/direction
-echo 1 > /sys/class/gpio/gpio25/value
+# echo out > /sys/class/gpio/gpio25/direction
+# echo 1 > /sys/class/gpio/gpio25/value
 
 sleep 3
 
@@ -35,6 +35,6 @@ rc=$?
 
 rm /tmp/sketch.uf2
 
-echo in > /sys/class/gpio/gpio25/direction
+# echo in > /sys/class/gpio/gpio25/direction
 
 exit $rc
