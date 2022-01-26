@@ -45,7 +45,7 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 
 COPY ./files/pip.conf /etc/pip.conf
 
-RUN pip3 install -v arancino==2.3.0
+RUN pip3 install -v --no-cache-dir arancino==2.4.0
 
 COPY ./files/arancino.prod.cfg /etc/arancino/config/arancino.prod.cfg
 COPY ./files/arancino.dev.cfg /etc/arancino/config/arancino.dev.cfg
