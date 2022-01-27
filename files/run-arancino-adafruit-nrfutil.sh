@@ -23,7 +23,7 @@ sleep 3
 stty -F $1 1200
 sleep 3
 
-port=($(echo "$1" | tr '/' '\n'))
+port=${1}
 
 # bossac actual upload
 echo "upload port is $1"
