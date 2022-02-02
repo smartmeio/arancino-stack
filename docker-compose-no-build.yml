@@ -129,7 +129,7 @@ services:
   node-red:
     container_name: node-red-arancino
     restart: always
-    image: nodered/node-red:2.0.6-12
+    image: nodered/node-red:2.2.0-14
     volumes:
       - node_red_data:/data
     ports:
