@@ -118,7 +118,7 @@ services:
     volumes:
       - node_red_data:/data
     ports:
-      - 127.0.0.1:1880:1880
+      - 127.0.0.1:${REDPORT}:1880
     networks:
       - "arancino_net"
 
