@@ -113,7 +113,7 @@ services:
   mosquitto:
     container_name: mosquitto-arancino
     restart: always
-    image: eclipse-mosquitto:2.0.12-openssl
+    image: smartmeio/eclipse-mosquitto:1.0.0
     volumes:
       - 'mosquitto_conf:/mosquitto/config'
       - 'mosquitto_data:/mosquitto/data'
