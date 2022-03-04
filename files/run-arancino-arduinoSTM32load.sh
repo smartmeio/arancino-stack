@@ -23,7 +23,7 @@ sleep 3
 
 port=${1}
 
-# bossac actual upload
+# STM32 actual upload
 echo "upload port is $1"
 arduinoSTM32load -dfu /usr/bin/ -bin "/tmp/sketch.bin" -port=${port} -v
 
