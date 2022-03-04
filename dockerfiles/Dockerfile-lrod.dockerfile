@@ -19,7 +19,7 @@ RUN : \
         sudo net-tools telnet procps coreutils psmisc \
         systemd systemd-sysv bash-completion apt-utils \
         dsniff git ntpdate lsof screen libffi-dev libyaml-dev \
-				git subversion psutils nginx dialog libssl-dev \
+        git subversion psutils nginx dialog libssl-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
@@ -39,10 +39,10 @@ RUN if [ $(dpkg --print-architecture) = "amd64" ]; then \
 		fi \
 	&& wget https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${nodearch}.tar.gz -P /tmp \
 	&& tar xvf /tmp/node-v${NODE_VERSION}-linux-${nodearch}.tar.gz --strip-components=1 -C /usr \
-  && npm install -g npm@7 \
-  && npm config set loglevel http \
-  && npm config set unsafe-perm true \
-  && npm install -g --unsafe @mdslab/wstun@1.1.0 && npm cache --force clean \
+	&& npm install -g npm@7 \
+	&& npm config set loglevel http \
+	&& npm config set unsafe-perm true \
+	&& npm install -g --unsafe @mdslab/wstun@1.1.0 && npm cache --force clean \
 	&& rm -rf /tmp/node-v${NODE_VERSION}-linux-${nodearch}.tar.gz
 
 # setting up nginx
