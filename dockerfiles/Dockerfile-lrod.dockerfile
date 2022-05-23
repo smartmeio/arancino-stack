@@ -79,7 +79,7 @@ COPY ./files/pip.conf /etc/pip.conf
 # installing lightning-rod
 RUN pip3 install -v --no-cache-dir acme==0.31 certbot==0.31 autobahn==21.11.1 \
         txaio==21.2.1 certbot-nginx==0.31 pyOpenSSL==21.0.0 cryptography==3.4.8 \
-		iotronic-lightningrod==0.5.0 \
+        Flask==2.0.2 Werkzeug==2.0.2 httplib2==0.20.2 iotronic-lightningrod==0.5.0 \
 	&& ln -sf /usr/local/bin/certbot /usr/bin/certbot \
 	&& ln -sf /usr/local/bin/python3 /usr/bin/python3
 COPY ./files/lr_install.py /usr/local/bin/lr_install

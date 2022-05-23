@@ -65,7 +65,8 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 COPY ./files/pip.conf /etc/pip.conf
 
 RUN pip3 install -v --no-cache-dir certbot==0.31 certbot-nginx==0.31 autobahn==21.11.1 \
-  txaio==21.2.1 acme==0.31 cryptography==3.4.8 pyOpenSSL==21.0.0 iotronic-lightningrod==0.5.0
+  txaio==21.2.1 acme==0.31 cryptography==3.4.8 pyOpenSSL==21.0.0 httplib2==0.20.2 \
+  Flask==2.0.2 Werkzeug==2.0.2 iotronic-lightningrod==0.5.0
 
 COPY ./files/lr_install.py /usr/local/bin/lr_install
 
