@@ -14,6 +14,7 @@ fi
 
 # Start the first process
 mkdir -p /run/nginx
+mkdir -p /var/www/html
 # /usr/sbin/nginx
 rc-update add nginx
 service nginx restart

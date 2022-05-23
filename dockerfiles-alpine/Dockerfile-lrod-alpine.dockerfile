@@ -36,6 +36,7 @@ RUN : \
 	&& mkdir -p /etc/nginx/conf.d/ \
 	&& mkdir -p /etc/nginx/sites-available/ \
 	&& mkdir -p /etc/nginx/sites-enabled/ \
+	&& mkdir -p /var/www/html \
     && :
 
 COPY ./files/nginx-alpine-default.conf /etc/nginx/nginx.conf
@@ -72,6 +73,10 @@ RUN chmod +x /usr/local/bin/lr_install && lr_install
 
 COPY ./files/startLR-alpine.sh /usr/local/bin/startLR
 RUN chmod +x /usr/local/bin/startLR
+
+# tweak to check nginx status on alpine linux
+RUN PYDIR=$(python3 -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])') \
+    && sed -i '71,/running/ s/running/started/' $PYDIR/iotronic_lightningrod/modules/proxies/nginx.py
 
 COPY files/lrod-alpine.service /etc/init.d/lrod
 RUN chmod +x /etc/init.d/lrod \
