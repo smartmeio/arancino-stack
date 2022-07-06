@@ -79,6 +79,29 @@ services:
     networks:
       - "arancino_net"
 
+  arancino-transmitter:
+    restart: always
+    privileged: true
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-arancino-transmitter.dockerfile
+    image: smartmeio/arancino-transmitter:1.3.0-test.3
+    command: arancino-transmitter
+    environment:
+      - ARANCINO=/etc/arancino
+      - ARANCINOCONF=/etc/arancino/config
+      - ARANCINOLOG=/var/log/arancino
+      - ARANCINOENV=production
+    volumes:
+      - "arancino_tm_conf:/etc/arancino/config"
+      - "arancino_tm_log:/var/log/arancino"
+      - "/dev:/dev"
+    depends_on:
+      - redis-volatile-arancino
+      - redis-persistent-arancino
+    networks:
+      - "arancino_net"
+
   mosquitto:
     restart: always
     image: smartmeio/eclipse-mosquitto:1.0.0
@@ -116,6 +139,8 @@ volumes:
   lr_le:
   arancino_conf:
   arancino_log:
+  arancino_tm_conf:
+  arancino_tm_log:
 
 networks:
   arancino_net:
