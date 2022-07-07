@@ -56,6 +56,7 @@ RUN pip3 install -v --no-cache-dir redistimeseries==1.4.5 \
 
 COPY ./files/transmitter.cfg.yml /etc/arancino/config/transmitter.cfg.yml
 COPY ./files/transmitter.cfg.dev.yml /etc/arancino/config/transmitter.cfg.dev.yml
+COPY ./files/transmitter.flow.test.cfg.yml /etc/arancino/config/transmitter.flow.test.cfg.yml
 
 # Jenkins home directory is a volume, so configuration and build history
 # can be persisted and survive image upgrades
