@@ -12,7 +12,7 @@ RUN : \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         vim wget nano curl bash-completion git zip unzip tar ca-certificates build-essential \
         libssl-dev libssl-dev autoconf m4 libtool libtool-bin libyaml-dev python-all \
-        python-all-dev python3-all python3-all-dev \
+        python-all-dev python3-all python3-all-dev libffi-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
