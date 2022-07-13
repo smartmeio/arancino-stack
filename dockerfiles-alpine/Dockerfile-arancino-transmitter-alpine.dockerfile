@@ -27,7 +27,6 @@ ENV ARANCINO_HOME $ARANCINO_HOME
 # If you bind mount a volume from the host or a data container,
 # ensure you use the same uid
 RUN mkdir -p $ARANCINO_HOME \
-  && mkdir -p /etc/systemd/system/ \
   && chown ${uid}:${gid} $ARANCINO_HOME \
   && addgroup -g ${gid} ${group} \
   && adduser -h "$ARANCINO_HOME" -u ${uid} -G ${group} -s /bin/bash -D ${user} \
@@ -39,12 +38,13 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 
 COPY ./files/pip.conf /etc/pip.conf
 
+# faking a systemd-like environment in Alpine Linux
+RUN mkdir -p /etc/systemd/system/
 COPY ./files/systemctl-template.sh /usr/bin/systemctl
-
 RUN chmod +x /usr/bin/systemctl
 
 RUN pip3 install -v --no-cache-dir redistimeseries==1.4.5 \
-    arancino-transmitter==1.0.0-test.3
+    arancino-transmitter==1.0.0-test.4
 
 COPY ./files/transmitter.cfg.yml /etc/arancino/config/transmitter.cfg.yml
 COPY ./files/transmitter.cfg.dev.yml /etc/arancino/config/transmitter.cfg.dev.yml

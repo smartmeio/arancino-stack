@@ -1,7 +1,7 @@
 transmitter:
 
   # Enable or disable the transmitter module of Arancino
-  enabled: true
+  enabled: false
 
 
   # Flows that run on the transmitter. Each flow is defined by a configuration file.
@@ -121,7 +121,7 @@ log:
   #   - WARNING
   #   - INFO
   #   - DEBUG
-  level: DEBUG
+  level: INFO
 
 
   # Name to print with the logger
