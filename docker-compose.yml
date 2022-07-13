@@ -69,7 +69,7 @@ services:
   arancino-transmitter:
     restart: always
     privileged: true
-    image: smartmeio/arancino-transmitter:1.3.0-test.3-alpine
+    image: smartmeio/arancino-transmitter:1.0.0-test.4-alpine
     command: arancino-transmitter
     environment:
       - ARANCINO=/etc/arancino
