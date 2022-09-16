@@ -88,6 +88,7 @@ ARG agent_port=50000
 ARG ARANCINO_HOME=/home/me
 
 ENV ARANCINO_HOME $ARANCINO_HOME
+ENV PYTHON_PIP_VERSION 22.2.2
 
 # Arancino is run with user `me`, uid = 1000
 # If you bind mount a volume from the host or a data container,
@@ -119,12 +120,12 @@ COPY --from=builder /pico-sdk/tools/elf2uf2/build/elf2uf2 "$BINDIR"
 COPY --from=builder /picotool/build/picotool "$BINDIR"
 
 # installing arancino
-RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
+RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py "pip==$PYTHON_PIP_VERSION" | python3
 
 COPY ./files/pip.conf /etc/pip.conf
 
 RUN pip3 install -v -U pip \
-	&& pip3 install -v --no-cache-dir arancino==2.5.0-test.7 adafruit-nrfutil
+	&& pip3 install -v --no-cache-dir arancino==2.5.1-test.1 adafruit-nrfutil
 
 COPY ./files/arancino.cfg.yml /etc/arancino/config/arancino.cfg.yml
 COPY ./files/arancino.dev.cfg.yml /etc/arancino/config/arancino.dev.cfg.yml

@@ -8,6 +8,7 @@ ARG gid=1000
 ARG ARANCINO_HOME=/home/me
 
 ENV TZ 'Europe/Rome'
+ENV PYTHON_PIP_VERSION 22.2.2
 
 # Jenkins is run with user `jenkins`, uid = 1000
 # If you bind mount a volume from the host or a data container,
@@ -49,11 +50,12 @@ RUN : \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
 
-RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
+# installing arancino
+RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py "pip==$PYTHON_PIP_VERSION" | python3
 
 COPY ./files/pip.conf /etc/pip.conf
 
-RUN pip3 install -v --no-cache-dir arancino==2.5.0-test.7 adafruit-nrfutil
+RUN pip3 install -v --no-cache-dir arancino==2.5.1-test.1 adafruit-nrfutil
 
 COPY ./files/arancino.cfg.yml /etc/arancino/config/arancino.cfg.yml
 COPY ./files/arancino.dev.cfg.yml /etc/arancino/config/arancino.dev.cfg.yml
