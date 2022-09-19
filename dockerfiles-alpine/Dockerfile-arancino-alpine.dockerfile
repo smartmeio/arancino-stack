@@ -125,7 +125,7 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py "pip==$PYTHON_PIP_VERSION
 COPY ./files/pip.conf /etc/pip.conf
 
 RUN pip3 install -v -U pip \
-	&& pip3 install -v --no-cache-dir arancino==2.5.1-test.1 adafruit-nrfutil
+	&& pip3 install -v --no-cache-dir arancino==2.5.1 adafruit-nrfutil
 
 COPY ./files/arancino.cfg.yml /etc/arancino/config/arancino.cfg.yml
 COPY ./files/arancino.dev.cfg.yml /etc/arancino/config/arancino.dev.cfg.yml

@@ -46,7 +46,7 @@ services:
   arancino:
     restart: always
     privileged: true
-    image: smartmeio/arancino:2.5.1-test.1-alpine
+    image: smartmeio/arancino:2.5.1-alpine
     command: /bin/bash -c 'gunicorn -c "/etc/arancino/config/gunicorn.cfg.py" arancino.ArancinoStart:app'
     environment:
       - ARANCINO=/etc/arancino
