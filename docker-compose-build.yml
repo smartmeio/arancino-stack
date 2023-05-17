@@ -1,14 +1,17 @@
-############################################################
-#                                                          #
-# docker-compose.yml for Arancino Ecosystem (Alpine Linux) #
-#                                                          #
-############################################################
+##############################################
+#                                            #
+# docker-compose.yml for Arancino Ecosystem  #
+#                                            #
+##############################################
 
 version: '3.7'
 services:
   lrod:
     restart: always
     privileged: true
+    build:
+      context: .
+      dockerfile: dockerfiles-alpine/Dockerfile-lrod-alpine.dockerfile
     image: smartmeio/lrod:0.5.0-alpine
     volumes:
       - "lr_conf:/etc/iotronic"
@@ -24,6 +27,9 @@ services:
   redis-volatile-arancino:
     restart: always
     privileged: true
+    build:
+      context: .
+      dockerfile: dockerfiles-alpine/Dockerfile-redis-volatile-alpine.dockerfile
     image: smartmeio/redis-volatile:6.0.16-alpine
     command: redis-server /etc/redis/redis-volatile.conf
     environment:
@@ -34,6 +40,9 @@ services:
   redis-persistent-arancino:
     restart: always
     privileged: true
+    build:
+      context: .
+      dockerfile: dockerfiles-alpine/Dockerfile-redis-persistent-alpine.dockerfile
     image: smartmeio/redis-persistent:6.0.16-alpine
     command: redis-server /etc/redis/redis-persistent.conf
     environment:
@@ -46,6 +55,9 @@ services:
   arancino:
     restart: always
     privileged: true
+    build:
+      context: .
+      dockerfile: dockerfiles-alpine/Dockerfile-arancino-alpine.dockerfile
     image: smartmeio/arancino:2.4.0-alpine
     command: /bin/bash -c 'gunicorn -c "/etc/arancino/config/gunicorn.cfg.py" arancino.ArancinoStart:app'
     environment:

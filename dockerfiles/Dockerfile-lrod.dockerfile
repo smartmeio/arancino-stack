@@ -19,7 +19,7 @@ RUN : \
         sudo net-tools telnet procps coreutils psmisc \
         systemd systemd-sysv bash-completion apt-utils \
         dsniff git ntpdate lsof screen libffi-dev libyaml-dev \
-				git subversion psutils nginx dialog libssl-dev \
+        git subversion psutils nginx dialog libssl-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
@@ -39,10 +39,10 @@ RUN if [ $(dpkg --print-architecture) = "amd64" ]; then \
 		fi \
 	&& wget https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${nodearch}.tar.gz -P /tmp \
 	&& tar xvf /tmp/node-v${NODE_VERSION}-linux-${nodearch}.tar.gz --strip-components=1 -C /usr \
-  && npm install -g npm@7 \
-  && npm config set loglevel http \
-  && npm config set unsafe-perm true \
-  && npm install -g --unsafe @mdslab/wstun@1.1.0 && npm cache --force clean \
+	&& npm install -g npm@7 \
+	&& npm config set loglevel http \
+	&& npm config set unsafe-perm true \
+	&& npm install -g --unsafe @mdslab/wstun@1.1.0 && npm cache --force clean \
 	&& rm -rf /tmp/node-v${NODE_VERSION}-linux-${nodearch}.tar.gz
 
 # setting up nginx
@@ -77,9 +77,9 @@ COPY ./files/pip.conf /etc/pip.conf
 # 	&& cat /etc/pip.conf
 
 # installing lightning-rod
-RUN pip3 install -v --no-cache-dir acme==0.31 certbot==0.31 \
-		certbot-nginx==0.31 pyOpenSSL==21.0.0 cryptography==3.4.8 \
-		iotronic-lightningrod==0.5.0 \
+RUN pip3 install -v --no-cache-dir acme==0.31 certbot==0.31 autobahn==21.11.1 \
+        txaio==21.2.1 certbot-nginx==0.31 pyOpenSSL==21.0.0 cryptography==3.4.8 \
+        Flask==2.0.2 Werkzeug==2.0.2 httplib2==0.20.2 iotronic-lightningrod==0.5.0 \
 	&& ln -sf /usr/local/bin/certbot /usr/bin/certbot \
 	&& ln -sf /usr/local/bin/python3 /usr/bin/python3
 COPY ./files/lr_install.py /usr/local/bin/lr_install

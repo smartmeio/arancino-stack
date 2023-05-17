@@ -36,6 +36,7 @@ RUN : \
 	&& mkdir -p /etc/nginx/conf.d/ \
 	&& mkdir -p /etc/nginx/sites-available/ \
 	&& mkdir -p /etc/nginx/sites-enabled/ \
+	&& mkdir -p /var/www/html \
     && :
 
 COPY ./files/nginx-alpine-default.conf /etc/nginx/nginx.conf
@@ -63,8 +64,9 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 
 COPY ./files/pip.conf /etc/pip.conf
 
-RUN pip3 install -v --no-cache-dir certbot==0.31 certbot-nginx==0.31 \
-  acme==0.31 cryptography==3.4.8 pyOpenSSL==21.0.0 iotronic-lightningrod==0.5.0
+RUN pip3 install -v --no-cache-dir certbot==0.31 certbot-nginx==0.31 autobahn==21.11.1 \
+  txaio==21.2.1 acme==0.31 cryptography==3.4.8 pyOpenSSL==21.0.0 httplib2==0.20.2 \
+  Flask==2.0.2 Werkzeug==2.0.2 iotronic-lightningrod==0.5.0
 
 COPY ./files/lr_install.py /usr/local/bin/lr_install
 
@@ -72,6 +74,10 @@ RUN chmod +x /usr/local/bin/lr_install && lr_install
 
 COPY ./files/startLR-alpine.sh /usr/local/bin/startLR
 RUN chmod +x /usr/local/bin/startLR
+
+# tweak to check nginx status on alpine linux
+RUN PYDIR=$(python3 -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])') \
+    && sed -i '71,/running/ s/running/started/' $PYDIR/iotronic_lightningrod/modules/proxies/nginx.py
 
 COPY files/lrod-alpine.service /etc/init.d/lrod
 RUN chmod +x /etc/init.d/lrod \

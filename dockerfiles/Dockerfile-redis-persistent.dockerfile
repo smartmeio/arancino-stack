@@ -1,13 +1,41 @@
-FROM redis:6.0.16-buster
+###########################################################
+# Timeseries builder Section #
+###########################################################
+FROM redis:6.0.16-buster as tsbuilder
 
-ARG TS_VERSION="1.6.0"
-ARG DOWN_URL="https://packages.smartme.io/repository/arancino-download/redistimeseries/glibc"
+ARG TS_VERSION="1.6.13"
+
+RUN echo "cross-build-start-timeseries"
 
 RUN : \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        software-properties-common vim wget nano curl bash-completion apt-utils \
-				zip unzip tar \
+        vim wget nano curl bash-completion git zip unzip tar ca-certificates build-essential \
+        libssl-dev libssl-dev autoconf m4 libtool libtool-bin libyaml-dev python-all \
+        python-all-dev python3-all python3-all-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && :
+
+RUN : \
+    && git clone https://github.com/RedisTimeSeries/RedisTimeSeries.git /RedisTimeSeries -b v${TS_VERSION} \
+  	&& cd /RedisTimeSeries \
+  	&& git submodule update --init --recursive \
+    && sed -i /getgcc/d system-setup.py \
+  	&& make setup \
+  	&& make -j3 \
+  	&& make pack \
+    && :
+
+RUN echo "cross-build-end-ts"
+###################################################################
+
+FROM redis:6.0.16-buster
+
+RUN : \
+    && apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        vim wget nano curl bash-completion apt-utils zip unzip tar \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
@@ -22,13 +50,7 @@ COPY ./files/redis-persistent.conf /etc/redis
 COPY ./files/docker-entrypoint-aof.sh /usr/local/bin/
 ENTRYPOINT ["docker-entrypoint-aof.sh"]
 
-# ADD ./files/redistimeseries.Linux-x86_64.1.6.0.zip /lib/redis/plugins/
-
-RUN wget ${DOWN_URL}/redistimeseries.Linux-$(uname -m).${TS_VERSION}.zip -P /tmp \
-	&& cd /tmp \
-	&& unzip redistimeseries.Linux-$(uname -m).${TS_VERSION}.zip -d /lib/redis/plugins/ \
-	&& rm -rf /tmp/*
-
+COPY --from=tsbuilder /RedisTimeSeries/bin/*-release/redistimeseries.so /lib/redis/plugins/
 
 EXPOSE 6380
 CMD ["redis-server"]

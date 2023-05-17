@@ -43,36 +43,6 @@ services:
     networks:
       - "arancino_net"
 
-  rediseen-volatile:
-    restart: always
-    privileged: true
-    image: smartmeio/rediseen:2.4.0
-    environment:
-      - REDISEEN_REDIS_URI=redis://:@redis-volatile-arancino:6379
-      - REDISEEN_DB_EXPOSED=0-5
-      - REDISEEN_KEY_PATTERN_EXPOSE_ALL=true
-      - REDISEEN_HOST=0.0.0.0
-      - REDISEEN_PORT=8001
-    depends_on:
-      - redis-volatile-arancino
-    networks:
-      - "arancino_net"
-
-  rediseen-persistent:
-    restart: always
-    privileged: true
-    image: smartmeio/rediseen:2.4.0
-    environment:
-      - REDISEEN_REDIS_URI=redis://:@redis-persistent-arancino:6380
-      - REDISEEN_DB_EXPOSED=0-5
-      - REDISEEN_KEY_PATTERN_EXPOSE_ALL=true
-      - REDISEEN_HOST=0.0.0.0
-      - REDISEEN_PORT=8002
-    depends_on:
-      - redis-persistent-arancino
-    networks:
-      - "arancino_net"
-
   arancino:
     restart: always
     privileged: true
@@ -91,8 +61,7 @@ services:
     depends_on:
       - redis-volatile-arancino
       - redis-persistent-arancino
-      - rediseen-volatile
-      - rediseen-persistent
+
     ports:
       - "127.0.0.1:${ARPORT}:1475"
     networks:
