@@ -77,7 +77,24 @@ These are the default values:
 
 edit the .env file if you need to change them.
 
-## How to run without building the docker layer images
+## How to launch the stack
+
+* Install docker on your system as described (min 20.10.x) [here](https://docs.docker.com/get-docker/)
+* Install docker-compose on your system as described (min 2.5.x) [here](https://github.com/docker/compose/releases/tag/v2.5.0)
+* `cd` into the root folder of this project
+* and then run:
+```bash
+docker-compose up -d
+```
+to build-up the container stack based on Alpine Linux.
+
+* instead run:
+```bash
+docker-compose -f docker-compose-debian.yml up -d
+```
+to build-up the container stack based on Debian Buster.
+
+## How to launch the stack with building the docker layer images
 
 * Install docker on your system as described (min 20.10.x) [here](https://docs.docker.com/get-docker/)
 * Install docker-compose on your system as described (min 2.5.x) [here](https://github.com/docker/compose/releases/tag/v2.5.0)
