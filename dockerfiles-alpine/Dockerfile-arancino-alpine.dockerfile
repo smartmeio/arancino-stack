@@ -144,5 +144,3 @@ RUN chmod +x /usr/bin/run-arancino-*
 VOLUME $ARANCINO_HOME
 
 EXPOSE 1475
-EXPOSE 6379
-EXPOSE 6380
