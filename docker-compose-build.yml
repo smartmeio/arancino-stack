@@ -10,8 +10,8 @@ services:
     restart: always
     privileged: true
     build:
-      context: .
-      dockerfile: dockerfiles-alpine/Dockerfile-lrod-alpine.dockerfile
+      context: ./dockerfiles
+      dockerfile: Dockerfile-lrod-alpine.dockerfile
     image: smartmeio/lrod:0.5.0-alpine
     volumes:
       - "lr_conf:/etc/iotronic"
@@ -28,8 +28,8 @@ services:
     restart: always
     privileged: true
     build:
-      context: .
-      dockerfile: dockerfiles-alpine/Dockerfile-redis-volatile-alpine.dockerfile
+      context: ./dockerfiles
+      dockerfile: Dockerfile-redis-volatile-alpine.dockerfile
     image: smartmeio/redis-volatile:6.0.16-alpine
     command: redis-server /etc/redis/redis-volatile.conf
     environment:
@@ -41,8 +41,8 @@ services:
     restart: always
     privileged: true
     build:
-      context: .
-      dockerfile: dockerfiles-alpine/Dockerfile-redis-persistent-alpine.dockerfile
+      context: ./dockerfiles
+      dockerfile: Dockerfile-redis-persistent-alpine.dockerfile
     image: smartmeio/redis-persistent:6.0.16-alpine
     command: redis-server /etc/redis/redis-persistent.conf
     environment:
@@ -56,8 +56,8 @@ services:
     restart: always
     privileged: true
     build:
-      context: .
-      dockerfile: dockerfiles-alpine/Dockerfile-arancino-alpine.dockerfile
+      context: ./dockerfiles
+      dockerfile: Dockerfile-arancino-alpine.dockerfile
     image: smartmeio/arancino:2.4.0-alpine
     command: /bin/bash -c 'gunicorn -c "/etc/arancino/config/gunicorn.cfg.py" arancino.ArancinoStart:app'
     environment:

@@ -124,10 +124,9 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 COPY ./files/pip.conf /etc/pip.conf
 
 RUN pip3 install -v -U pip \
-	&& pip3 install -v --no-cache-dir arancino==2.4.0 adafruit-nrfutil
+	&& pip3 install -v --no-cache-dir arancino==2.7.0 adafruit-nrfutil
 
-COPY ./files/arancino.cfg /etc/arancino/config/arancino.cfg
-COPY ./files/arancino.dev.cfg /etc/arancino/config/arancino.dev.cfg
+COPY ./files/arancino.cfg.yml /etc/arancino/config/arancino.cfg.yml
 
 # copying upload tool scripts
 COPY ./files/uf2conv.py /usr/bin/uf2conv.py
@@ -142,5 +141,7 @@ RUN chmod +x /usr/bin/run-arancino-*
 # Arancino home directory is a volume, so configuration and build history
 # can be persisted and survive image upgrades
 VOLUME $ARANCINO_HOME
+
+RUN apk add bluez
 
 EXPOSE 1475
