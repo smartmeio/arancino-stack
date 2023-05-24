@@ -1,0 +1,153 @@
+transmitter:
+
+  # Enable or disable the transmitter module of Arancino
+  enabled: true
+
+
+  # Flows that run on the transmitter. Each flow is defined by a configuration file.
+  flows:
+    - test
+
+  reader:
+
+    # Represents the time (in seconds) in which the reader collects data
+    # and transfers it to the upper level
+    cycle_time: 10
+
+
+redis:
+
+  # Redis Server host of volatile instance
+  host_volatile: localhost
+
+
+  # Redis Server host of persistent instance
+  host_persistent: localhost
+
+
+  # Redis Server port of volatile instance
+  port_volatile: 6379
+
+
+  # Redis Server port of persistent instance
+  port_persistent: 6380
+
+
+  # Decode the response in Redis client response.
+  decode_response: true
+
+
+  # Instance type to use; policy for data storage: accepted values are:
+  #      - VOLATILE: all databases are volatile
+  #      - PERSISTENT: all databases are persistent
+  #      - VOLATILE_PERSISTENT:
+  #          volatile: data, reserved key, time series;
+  #          persistent: device, persistent data, time series tags, settings;
+  #
+  instance_type: VOLATILE_PERSISTENT
+
+
+  #  Number of connection attempts to Redis Server, one attempt every 3 second
+  #      - No limits: -1
+  #      - Default: 5
+  connection_attempts: 5
+
+
+  #  Time Series data retetion time. It's the maximum age for samples compared
+  #      to last event time (in milliseconds)
+  #
+  #      - Default: 0 - The global retention secs configuration of the database.
+  #          When set to 0, the series is not trimmed at all
+  #      - 1 Minute: 60000
+  #      - 12 Hours: 43200000
+  #      - 1 Day: 86400000
+  #      - 7 Days: 604800000
+  #
+  #      Note: Time Series data are usually stored in the volatile instance. If the device
+  #          power off, you lose your data in any case.
+  #retetion: 3600000
+  retetion: 10000
+
+  volatile:
+    datastore_std_db: 0
+    datastore_dev_db: 1
+    datastore_per_db: 2
+    datastore_rsvd_db: 3
+    datastore_tse_db: 4
+    datastore_tag_db: 5
+
+    host_volatile: "localhost"
+    port_volatile: 6379
+
+    host_persistent: "localhost"
+    port_persistent: 6379
+
+
+  persistent:
+    datastore_std_db: 0
+    datastore_dev_db: 1
+    datastore_per_db: 2
+    datastore_rsvd_db: 3
+    datastore_tse_db: 4
+    datastore_tag_db: 5
+    host_volatile: "localhost"
+    port_volatile: 6380
+    host_persistent: "localhost"
+    port_persistent: 6380
+
+  volatile_persistent:
+    #volatile
+    datastore_std_db: 0
+    datastore_rsvd_db: 1
+    datastore_tse_db: 2
+
+    host_volatile: "redis-volatile-arancino"
+    port_volatile: 6379
+
+    #persistent
+    datastore_dev_db: 0
+    datastore_per_db: 1
+    datastore_tag_db: 2
+    datastore_stng_db: 3
+
+    host_persistent: "redis-persistent-arancino"
+    port_persistent: 6380
+
+
+
+log:
+
+  # Log Level for the Logger. Accetpted values are:
+  #   - ERROR
+  #   - WARNING
+  #   - INFO
+  #   - DEBUG
+  level: INFO
+
+
+  # Name to print with the logger
+  name: Transmitter
+
+
+  # Available Log Handlers, sets to true to enable or false to disable
+  # Console Handler
+  handler_console: false
+
+
+  # File Handler
+  handler_file: true
+
+
+  # Size in MBytes only for the handler_file. Min: 1, Max: 5, Default: 1
+  size: 1
+
+  # Number of files to use in rotate mode. Min: 1, Max: 10, Default: 1
+  rotate: 1
+
+  # Names of log files
+  # Standard Log File
+  file_log: transmitter-arancino.log
+
+
+  # Error Log File
+  file_error: transmitter-arancino.error.log

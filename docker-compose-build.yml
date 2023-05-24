@@ -78,6 +78,27 @@ services:
     networks:
       - "arancino_net"
 
+  arancino-transmitter:
+    restart: always
+    build:
+      context: ./dockerfiles
+      dockerfile: Dockerfile-arancino-transmitter-alpine.dockerfile
+    image: smartmeio/arancino-transmitter:1.0.0-beta.1-alpine
+    command: /bin/bash -c 'arancino-transmitter'
+    environment:
+      - ARANCINO=/etc/arancino
+      - ARANCINOCONF=/etc/arancino/config
+      - ARANCINOLOG=/var/log/arancino
+      - ARANCINOENV=PROD
+    volumes:
+      - "arancino-transmitter_conf:/etc/arancino/config"
+      - "arancino-transmitter_log:/var/log/arancino"
+    depends_on:
+      - redis-volatile-arancino
+      - redis-persistent-arancino
+    networks:
+      - "arancino_net"
+
   mosquitto:
     restart: always
     image: smartmeio/eclipse-mosquitto:1.0.0
