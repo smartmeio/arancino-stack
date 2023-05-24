@@ -53,10 +53,9 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 
 COPY ./files/pip.conf /etc/pip.conf
 
-RUN pip3 install -v --no-cache-dir arancino==2.4.0 adafruit-nrfutil
+RUN pip3 install -v --no-cache-dir arancino==2.7.0 adafruit-nrfutil
 
-COPY ./files/arancino.cfg /etc/arancino/config/arancino.cfg
-COPY ./files/arancino.dev.cfg /etc/arancino/config/arancino.dev.cfg
+COPY ./files/arancino.cfg.yml /etc/arancino/config/arancino.cfg.yml
 
 # copying upload tool scripts
 COPY ./files/run-arancino-bossac.sh /usr/bin/run-arancino-bossac

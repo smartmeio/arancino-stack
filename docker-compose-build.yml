@@ -58,7 +58,7 @@ services:
     build:
       context: ./dockerfiles
       dockerfile: Dockerfile-arancino-alpine.dockerfile
-    image: smartmeio/arancino:2.4.0-alpine
+    image: smartmeio/arancino:2.7.0-alpine
     command: /bin/bash -c 'gunicorn -c "/etc/arancino/config/gunicorn.cfg.py" arancino.ArancinoStart:app'
     environment:
       - ARANCINO=/etc/arancino

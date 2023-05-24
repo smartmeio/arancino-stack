@@ -76,7 +76,7 @@ RUN : \
        sudo net-tools libffi libffi-dev openssl openssl-dev sed \
        libusb libusb-dev libftdi1 libftdi1-dev avrdude openocd \
        g++ make libressl-dev libc-dev musl-dev build-base \
-       bsd-compat-headers bash-completion cmake \
+       bsd-compat-headers bash-completion cmake bluez\
     && :
 
 ARG user=me
@@ -141,7 +141,5 @@ RUN chmod +x /usr/bin/run-arancino-*
 # Arancino home directory is a volume, so configuration and build history
 # can be persisted and survive image upgrades
 VOLUME $ARANCINO_HOME
-
-RUN apk add bluez
 
 EXPOSE 1475
