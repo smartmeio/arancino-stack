@@ -76,10 +76,10 @@ redis:
     datastore_tse_db: 4
     datastore_tag_db: 5
 
-    host_volatile: "localhost"
+    host_volatile: "redis-volatile-arancino"
     port_volatile: 6379
 
-    host_persistent: "localhost"
+    host_persistent: "redis-persistent-arancino"
     port_persistent: 6379
 
 
@@ -90,9 +90,9 @@ redis:
     datastore_rsvd_db: 3
     datastore_tse_db: 4
     datastore_tag_db: 5
-    host_volatile: "localhost"
+    host_volatile: "redis-volatile-arancino"
     port_volatile: 6380
-    host_persistent: "localhost"
+    host_persistent: "redis-persistent-arancino"
     port_persistent: 6380
 
   volatile_persistent:
