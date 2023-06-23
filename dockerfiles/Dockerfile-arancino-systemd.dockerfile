@@ -1,4 +1,4 @@
-FROM python:3.7-buster
+FROM python:3.11-slim-bookworm
 
 # defining user 'me'
 ARG user=me
@@ -53,7 +53,7 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 
 COPY ./files/pip.conf /etc/pip.conf
 
-RUN pip3 install -v --no-cache-dir arancino==2.4.0
+RUN pip3 install -v --no-cache-dir arancino==2.7.1
 
 COPY ./files/arancino.prod.cfg /etc/arancino/config/arancino.prod.cfg
 COPY ./files/arancino.dev.cfg /etc/arancino/config/arancino.dev.cfg

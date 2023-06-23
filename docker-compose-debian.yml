@@ -47,7 +47,7 @@ services:
   arancino:
     restart: always
     privileged: true
-    image: smartmeio/arancino:2.7.0
+    image: smartmeio/arancino:2.7.1
     command: /bin/bash -c 'gunicorn -c "/etc/arancino/config/gunicorn.cfg.py" arancino.ArancinoStart:app'
     environment:
       - ARANCINO=/etc/arancino
@@ -69,7 +69,7 @@ services:
 
   arancino-transmitter:
     restart: always
-    image: smartmeio/arancino-transmitter:1.0.0-beta.1
+    image: smartmeio/arancino-transmitter:1.0.1
     command: /bin/bash -c 'arancino-transmitter'
     environment:
       - ARANCINO=/etc/arancino
@@ -122,6 +122,8 @@ volumes:
   lr_le:
   arancino_conf:
   arancino_log:
+  arancino-transmitter_conf:
+  arancino-transmitter_log:
 
 networks:
   arancino_net:

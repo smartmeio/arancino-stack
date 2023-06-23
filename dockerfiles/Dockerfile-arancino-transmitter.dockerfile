@@ -1,4 +1,4 @@
-FROM python:3.10-slim-buster
+FROM python:3.11-slim-bookworm
 
 # defining user 'me'
 ARG user=me
@@ -44,7 +44,7 @@ RUN : \
 COPY ./files/pip.conf /etc/pip.conf
 
 RUN pip3 install -v -U pip \
-	&& pip3 install -v --no-cache-dir arancino-transmitter==1.0.0b1
+	&& pip3 install -v --no-cache-dir arancino-transmitter==1.0.1
 
 COPY ./files/transmitter.cfg.yml /etc/arancino/config/transmitter.cfg.yml
 

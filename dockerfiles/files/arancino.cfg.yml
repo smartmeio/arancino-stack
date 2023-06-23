@@ -440,7 +440,7 @@ log:
 
 
   # File Handler
-  handler_file: true
+  handler_file: false
 
 
   # Size in MBytes only for the handler_file. Min: 1, Max: 5, Default: 1

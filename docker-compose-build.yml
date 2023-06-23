@@ -58,7 +58,7 @@ services:
     build:
       context: ./dockerfiles
       dockerfile: Dockerfile-arancino-alpine.dockerfile
-    image: smartmeio/arancino:2.7.0-alpine
+    image: smartmeio/arancino:2.7.1-alpine
     command: /bin/bash -c 'gunicorn -c "/etc/arancino/config/gunicorn.cfg.py" arancino.ArancinoStart:app'
     environment:
       - ARANCINO=/etc/arancino
@@ -83,7 +83,7 @@ services:
     build:
       context: ./dockerfiles
       dockerfile: Dockerfile-arancino-transmitter-alpine.dockerfile
-    image: smartmeio/arancino-transmitter:1.0.0-beta.1-alpine
+    image: smartmeio/arancino-transmitter:1.0.1-alpine
     command: /bin/bash -c 'arancino-transmitter'
     environment:
       - ARANCINO=/etc/arancino
@@ -136,6 +136,8 @@ volumes:
   lr_le:
   arancino_conf:
   arancino_log:
+  arancino-transmitter_conf:
+  arancino-transmitter_log:
 
 networks:
   arancino_net:

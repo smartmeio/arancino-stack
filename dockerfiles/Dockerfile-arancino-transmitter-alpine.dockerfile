@@ -35,6 +35,6 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 COPY ./files/pip.conf /etc/pip.conf
 
 RUN pip3 install -v -U pip \
-	&& pip3 install -v --no-cache-dir arancino-transmitter==1.0.0b1
+	&& pip3 install -v --no-cache-dir arancino-transmitter==1.0.1
 
 COPY ./files/transmitter.cfg.yml /etc/arancino/config/transmitter.cfg.yml

@@ -1,4 +1,4 @@
-FROM python:3.7.12-slim-buster
+FROM python:3.11-slim-bookworm
 
 # defining user 'me'
 ARG user=me
@@ -45,6 +45,7 @@ RUN : \
         systemd systemd-sysv bash-completion apt-utils \
         openocd avrdude dfu-util-stm32 bossa-cli \
         ca-certificates ca-cacert libssl-dev libyaml-dev \
+        bluez \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && :
@@ -53,7 +54,7 @@ RUN wget -qO- https://bootstrap.pypa.io/pip/get-pip.py | python3
 
 COPY ./files/pip.conf /etc/pip.conf
 
-RUN pip3 install -v --no-cache-dir arancino==2.7.0 adafruit-nrfutil
+RUN pip3 install -v --no-cache-dir arancino==2.7.1 adafruit-nrfutil
 
 COPY ./files/arancino.cfg.yml /etc/arancino/config/arancino.cfg.yml
 
