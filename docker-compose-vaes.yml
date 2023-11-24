@@ -6,19 +6,6 @@
 
 version: '3.7'
 services:
-  lrod:
-    restart: always
-    privileged: true
-    image: smartmeio/lrod:0.5.0
-    command: startLR
-    volumes:
-      - "lr_conf:/etc/iotronic"
-      #- "lr_log:/var/log/iotronic"
-      - "lr_var:/var/lib/iotronic"
-      - "lr_nginx:/etc/nginx"
-      - "lr_le:/etc/letsencrypt"
-    network_mode: "host"
-
   redis-volatile-arancino:
     restart: always
     privileged: true
@@ -44,7 +31,7 @@ services:
   arancino:
     restart: always
     privileged: true
-    image: smartmeio/arancino:2.7.1-alpine
+    image: smartmeio/arancino:2.7.3-alpine
     command: /bin/bash -c 'gunicorn -c "/etc/arancino/config/gunicorn.cfg.py" arancino.ArancinoStart:app'
     environment:
       - ARANCINO=/etc/arancino
@@ -52,6 +39,7 @@ services:
       - ARANCINOLOG=/var/log/arancino
       - ARANCINOENV=PROD
       - FLASK_ENV=production
+      - EDGEUUID=
     volumes:
       - "arancino_conf:/etc/arancino/config"
       - "arancino_log:/var/log/arancino"
@@ -59,20 +47,19 @@ services:
     depends_on:
       - redis-volatile-arancino
       - redis-persistent-arancino
-    ports:
-      - ${ARPORT}:1475
     networks:
       - "arancino_net"
 
   arancino-transmitter:
     restart: always
-    image: smartmeio/arancino-transmitter:1.0.1-alpine
+    image: smartmeio/arancino-transmitter:1.1.0-alpine
     command: /bin/bash -c 'arancino-transmitter'
     environment:
       - ARANCINO=/etc/arancino
       - ARANCINOCONF=/etc/arancino/config
       - ARANCINOLOG=/var/log/arancino
       - ARANCINOENV=PROD
+      - EDGEUUID=
     volumes:
       - "arancino-transmitter_conf:/etc/arancino/config"
       - "arancino-transmitter_log:/var/log/arancino"
@@ -102,23 +89,23 @@ services:
       - redis-volatile-arancino
       - redis-persistent-arancino
     ports:
-      - 5000:5000
+      - 127.0.0.1:${INTPORT}:5000
     networks:
       - "arancino_net"
 
-  mosquitto:
-    restart: always
-    image: smartmeio/eclipse-mosquitto:1.0.0
-    volumes:
-      - "mosquitto_conf:/mosquitto/config"
-      - "mosquitto_data:/mosquitto/data"
-      - "mosquitto_log:/mosquitto/log"
-    ports:
-      - 127.0.0.1:${MPORT}:1883
-      - 127.0.0.1:${MSPORT}:8883
-      - 127.0.0.1:${MWSPORT}:9001
-    networks:
-      - "arancino_net"
+#  mosquitto:
+#    restart: always
+#    image: smartmeio/eclipse-mosquitto:1.0.0
+#    volumes:
+#      - "mosquitto_conf:/mosquitto/config"
+#      - "mosquitto_data:/mosquitto/data"
+#      - "mosquitto_log:/mosquitto/log"
+#    ports:
+#      - 127.0.0.1:${MPORT}:1883
+#      - 127.0.0.1:${MSPORT}:8883
+#      - 127.0.0.1:${MWSPORT}:9001
+#    networks:
+#      - "arancino_net"
 
   node-red:
     restart: always
@@ -132,15 +119,10 @@ services:
 
 volumes:
   node_red_data:
-  mosquitto_conf:
-  mosquitto_data:
-  mosquitto_log:
+#  mosquitto_conf:
+#  mosquitto_data:
+#  mosquitto_log:
   redis-data:
-  lr_conf:
-  #lr_log:
-  lr_var:
-  lr_nginx:
-  lr_le:
   arancino_conf:
   arancino_log:
   arancino-transmitter_conf:
@@ -150,4 +132,3 @@ volumes:
 networks:
   arancino_net:
     driver: "bridge"
-
