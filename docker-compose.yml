@@ -34,10 +34,14 @@ services:
 
   interface:
     restart: always
-    image: smartmeio/arancino-interface:1.2.0-beta.3-alpine
+    image: smartmeio/arancino-interface:1.2.0-beta.4-alpine
     environment:
       - REDIS_HOST_VOLATILE=redis
       - REDIS_HOST_PERSISTENT=redis
+      - EDGEAPIKEY=${EDGEAPIKEY}
+      - LROD_HOST=${LROD_HOST}
+      - ARANCINO_HOST=daemon
+
     volumes:
       - "arancino-interface_conf:/etc/arancino/config"
     depends_on:
